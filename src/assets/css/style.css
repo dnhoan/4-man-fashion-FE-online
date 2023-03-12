@@ -38,6 +38,7 @@
 -------------------------------------------------------------------*/
 /*=== MEDIA QUERY ===*/
 @import url("https://fonts.googleapis.com/css?family=Poppins:400,700,800|Source+Sans+Pro:400|Catamaran:400,600,700");
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 html, body {
   height: 100%;
 }
@@ -1189,8 +1190,9 @@ a.text-primary:hover {
 
 .single-product-details .color-swatches a {
   display: inline-block;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
   margin-right: 5px;
 }
 

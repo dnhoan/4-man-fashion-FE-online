@@ -6,10 +6,10 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
-import { ProductSingleComponent } from './product-single/product-single.component';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
-import { ShopComponent } from './shop/shop.component';
+import { ProductsComponent } from './products/products.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrdersComponent } from './orders/orders.component';
 import { LoginComponent } from './login/login.component';
@@ -38,10 +38,10 @@ import { CommonConstants } from './constants/common-constants';
     HeaderComponent,
     FooterComponent,
     HomeComponent,
-    ProductSingleComponent,
+    ProductDetailComponent,
     CartComponent,
     CheckoutComponent,
-    ShopComponent,
+    ProductsComponent,
     DashboardComponent,
     OrdersComponent,
     LoginComponent,
