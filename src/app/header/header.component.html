@@ -66,39 +66,13 @@
             Shop.
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
-            <li><a routerLink="/shop">Shop</a></li>
+            <li><a routerLink="/product">Sản phẩm</a></li>
             <li><a routerLink="/product-single">Product Details</a></li>
             <li><a routerLink="/checkout">Checkout</a></li>
             <li><a routerLink="/cart">Cart</a></li>
           </ul>
         </li>
         <!-- / Blog -->
-
-        <!-- Account -->
-        <li class="nav-item dropdown dropdown-slide">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown5"
-            role="button"
-            data-delay="350"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Account.
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
-            <li><a routerLink="/dashboard">Dahsboard</a></li>
-            <li><a routerLink="/order">Orders</a></li>
-            <li><a routerLink="/address">Address</a></li>
-            <li><a routerLink="/profile-details">Profile Details</a></li>
-            <li><a routerLink="/login">Login Page</a></li>
-            <li><a routerLink="/signup">SignUp Page</a></li>
-            <li><a routerLink="/forgot-password">Forgot Password</a></li>
-          </ul>
-        </li>
-        <!-- / Account -->
       </ul>
     </div>
     <!-- Navbar-collapse -->
@@ -173,8 +147,25 @@
           </div>
         </div>
       </li>
-      <li class="list-inline-item">
-        <a href="#"><i class="tf-ion-ios-person mr-3"></i></a>
+      <li class="nav-item list-inline-item dropdown dropdown-slide">
+        <a
+          class="dropdown-toggle"
+          href="#"
+          id="navbarDropdown5"
+          role="button"
+          data-delay="350"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          ><i class="tf-ion-ios-person mr-3"></i>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown5">
+          <ng-container *ngFor="let item of menuItemAccount">
+            <li>
+              <a [routerLink]="item.routerLink">{{ item.label }}</a>
+            </li>
+          </ng-container>
+        </ul>
       </li>
     </ul>
   </div>

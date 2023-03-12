@@ -23,11 +23,10 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    console.log('auth guard');
-
     if (this.jwtService.isLoggedIn() && !this.jwtService.isTokenExpired()) {
       return true;
     }
+    this.jwtService.removeJwtToken();
     this.router.navigate(['/login']);
     return false;
   }
