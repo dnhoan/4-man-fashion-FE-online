@@ -11,13 +11,13 @@ import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ProductsComponent } from './products/products.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { OrdersComponent } from './orders/orders.component';
+import { OrdersComponent } from './dashboard/orders/orders.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { ProfileDetailsComponent } from './profile-details/profile-details.component';
-import { AddressComponent } from './address/address.component';
-import { EditAddressComponent } from './edit-address/edit-address.component';
+import { ProfileDetailsComponent } from './dashboard/profile-details/profile-details.component';
+import { AddressComponent } from './dashboard/address/address.component';
+import { EditAddressComponent } from './dashboard/edit-address/edit-address.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -31,6 +31,7 @@ import {
 } from '@auth0/angular-jwt';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonConstants } from './constants/common-constants';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -42,14 +43,9 @@ import { CommonConstants } from './constants/common-constants';
     CartComponent,
     CheckoutComponent,
     ProductsComponent,
-    DashboardComponent,
-    OrdersComponent,
     LoginComponent,
     SignupComponent,
     ForgotPasswordComponent,
-    ProfileDetailsComponent,
-    AddressComponent,
-    EditAddressComponent,
   ],
   imports: [
     BrowserModule,

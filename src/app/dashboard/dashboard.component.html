@@ -1,4 +1,4 @@
-<section class="page-header">
+<!-- <section class="page-header">
   <div class="overly"></div>
   <div class="container">
     <div class="row justify-content-center">
@@ -22,40 +22,27 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <section class="user-dashboard page-wrapper">
   <div class="container">
     <div class="row">
       <div class="col-12 col-md-5 col-sm-12 col-lg-3">
         <div class="nav flex-column nav-pills">
-          <a class="nav-link active" routerLink="/dashboard">Dashboard</a>
+          <a class="nav-link active" routerLink="profile">Thông tin cá nhân</a>
         </div>
         <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="/dashboard">Orders</a>
+          <a class="nav-link" routerLink="order">Đơn hàng</a>
         </div>
         <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="/dashboard">Downloads</a>
+          <a class="nav-link" routerLink="address">Địa chỉ</a>
         </div>
         <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="/dashboard">Address</a>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="/dashboard">Account</a>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="/">Log Out</a>
+          <a class="nav-link" (click)="logout()">Log Out</a>
         </div>
       </div>
-
       <div class="col-12 col-md-7 col-sm-12 col-lg-9">
-        <p>
-          Hello Therichpost (not Therichpost? <a routerLink="/">Log out</a>)
-        </p>
-        From your account dashboard you can view your
-        <a href="#">recent orders</a>, manage your
-        <a href="#">shipping and billing addresses</a> and
-        <a href="#">edit your password and account details</a>.
+        <router-outlet></router-outlet>
       </div>
     </div>
   </div>
