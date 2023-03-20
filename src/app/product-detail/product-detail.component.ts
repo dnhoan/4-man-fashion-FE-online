@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { cartItemsStore } from '../cart/cart.repository';
+import { CartService } from '../cart/cart.service';
+import { CommonService } from '../common-services/common.service';
+import { customerStore } from '../dashboard/customer.repository';
 import { Color } from '../model/color.model';
+import { CustomerDto } from '../model/CustomerDto.model';
 import { ProductDTO } from '../model/product.model';
 import { ProductDetailDTO } from '../model/productDetail.model';
 import { Size } from '../model/size.model';
+import { upsertEntitiesById } from '@ngneat/elf-entities';
 import { ProductDetailService } from './product-detail.service';
 
 @Component({
@@ -19,9 +25,13 @@ export class ProductDetailComponent implements OnInit {
   sizeSelected!: Size;
   colorSelected!: Color;
   productDetail!: ProductDetailDTO;
+  currentCustomer!: CustomerDto | null;
   constructor(
     private route: ActivatedRoute,
-    private productDetailService: ProductDetailService
+    private router: Router,
+    private productDetailService: ProductDetailService,
+    private cartService: CartService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -46,6 +56,27 @@ export class ProductDetailComponent implements OnInit {
     this.sizeSelected = size;
     this.selectProductDetail();
   }
+  addToCart() {
+    let customer = customerStore.getValue().customer;
+    if (customer) {
+      let cart = {
+        id: 0,
+        amount: this.amount,
+        productDetailCartDto: this.productDetail,
+      };
+      this.cartService.addToCart(customer.id, cart).subscribe((res) => {
+        cartItemsStore.update(
+          upsertEntitiesById(res.id, {
+            updater: { amount: res.amount },
+            creator: () => res,
+          })
+        );
+        this.commonService.success('Thêm vào giỏ hàng thành công');
+      });
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
 
   selectProductDetail() {
     if (this.sizeSelected && this.colorSelected)
@@ -57,11 +88,6 @@ export class ProductDetailComponent implements OnInit {
   }
 
   redirect404() {
-    Swal.fire({
-      title: 'Error!',
-      text: 'Lỗi lấy thông tin sản phẩm chi tiết',
-      icon: 'error',
-      confirmButtonText: 'Đóng',
-    });
+    this.commonService.error('Lỗi lấy thông tin sản phẩm chi tiết');
   }
 }

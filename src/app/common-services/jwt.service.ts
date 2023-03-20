@@ -34,7 +34,7 @@ export class JwtService {
   }
 
   getDecodedAccessToken() {
-    if (!this.isLoggedIn()) {
+    if (!this.isAuthenticated()) {
       customerStore.update(() => ({ customer: null }));
     }
     const token = localStorage.getItem(CommonConstants.TOKEN_KEY);
@@ -46,7 +46,7 @@ export class JwtService {
     }
   }
 
-  isLoggedIn(): boolean {
+  isAuthenticated(): boolean {
     const token = localStorage.getItem(CommonConstants.TOKEN_KEY);
 
     return token && !this.isTokenExpired() ? true : false;
