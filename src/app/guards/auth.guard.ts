@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (this.jwtService.isLoggedIn() && !this.jwtService.isTokenExpired()) {
+    if (this.jwtService.isAuthenticated()) {
       return true;
     }
     this.jwtService.removeJwtToken();

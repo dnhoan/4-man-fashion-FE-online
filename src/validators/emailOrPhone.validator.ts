@@ -47,3 +47,13 @@ export function PasswordValidator(): ValidatorFn {
     return null;
   };
 }
+export function EmptyValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    let controlVal = control.value;
+
+    if (!(controlVal || '').trim()) {
+      return { detail: 'Vui lòng nhập giá trị' };
+    }
+    return null;
+  };
+}

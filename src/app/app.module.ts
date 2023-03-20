@@ -10,17 +10,12 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ProductsComponent } from './products/products.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { OrdersComponent } from './dashboard/orders/orders.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { ProfileDetailsComponent } from './dashboard/profile-details/profile-details.component';
-import { AddressComponent } from './dashboard/address/address.component';
-import { EditAddressComponent } from './dashboard/edit-address/edit-address.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './common-services/auth.service';
 import { JwtService } from './common-services/jwt.service';
@@ -31,7 +26,14 @@ import {
 } from '@auth0/angular-jwt';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonConstants } from './constants/common-constants';
-import { DashboardModule } from './dashboard/dashboard.module';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US } from 'ng-zorro-antd/i18n';
+import en from '@angular/common/locales/en';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module';
+import { AddressesComponent } from './checkout/addresses/addresses.component';
+
+registerLocaleData(en);
 
 @NgModule({
   declarations: [
@@ -46,6 +48,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     LoginComponent,
     SignupComponent,
     ForgotPasswordComponent,
+    AddressesComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgZorroAntdModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem(CommonConstants.TOKEN_KEY),
@@ -62,6 +66,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
         disallowedRoutes: ['example.com/login'],
       },
     }),
+    BrowserAnimationsModule,
   ],
   providers: [
     AuthGuard,
@@ -69,6 +74,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     JwtService,
     JwtHelperService, // Add JwtHelperService to the providers array
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: NZ_I18N, useValue: en_US },
   ],
   bootstrap: [AppComponent],
 })

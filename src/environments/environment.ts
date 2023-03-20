@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:8080',
+  baseProvinces: 'https://provinces.open-api.vn',
 };
 
 /*
