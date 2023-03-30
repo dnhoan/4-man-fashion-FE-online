@@ -3,8 +3,8 @@ export interface Color {
   colorCode?: string;
   colorName?: string;
   status?: number;
-  ctime?: Date;
-  mtime?: Date;
+  ctime?: string;
+  mtime?: string;
 }
 
 export interface ColorDTO {
@@ -12,6 +12,6 @@ export interface ColorDTO {
   colorCode?: string;
   colorName?: string;
   status?: number;
-  ctime?: Date;
-  mtime?: Date;
+  ctime?: string;
+  mtime?: string;
 }

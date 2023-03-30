@@ -93,7 +93,7 @@
           <span
             class="mt-1 text-danger"
             *ngIf="formAddress.get('detail')?.touched"
-            >{{ (formAddress.get("detail")?.errors)!["detail"] }}</span
+            >{{ (formAddress.get("detail")?.errors)!["empty"] }}</span
           >
         </ng-container>
       </div>
@@ -108,7 +108,7 @@
         Hủy
       </button>
       <button nz-button type="submit" [nzType]="'primary'" nzSize="large">
-        {{ addressEdited ? 'Lưu': 'Thêm'}}
+        {{ addressEdited ? "Lưu" : "Thêm" }}
       </button>
     </div>
   </form>

@@ -15,4 +15,14 @@ export class CommonConstants {
     ACTIVE: 1,
     INACTIVE: 0,
   };
+
+  public static readonly DELIVER_STATUS = {
+    DELIVER: 1,
+    NON_DELIVER: 0,
+  };
+
+  public static readonly PURCHASE_TYPE = {
+    ONLINE: 1,
+    SHOP: 0,
+  };
 }

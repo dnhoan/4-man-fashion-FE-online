@@ -1,7 +1,7 @@
-import { ProductDetail } from './productDetail.model';
+import { ProductDetail, ProductDetailDTO } from './productDetail.model';
 
 export interface CartItemDto {
   id: number;
   amount: number;
-  productDetailCartDto: ProductDetail;
+  productDetailDTO: ProductDetailDTO;
 }

@@ -34,23 +34,21 @@
                 </td>
 
                 <td [width]="300" class="product-name" data-title="Product">
-                  <a href="#">{{
-                    item.productDetailCartDto.productDetailName
-                  }}</a>
+                  <a href="#">{{ item.productDetailDTO.productDetailName }}</a>
                 </td>
 
                 <td class="product-price" data-title="Price">
                   <span class="amount"
                     ><span class="currencySymbol">
                       <pre wp-pre-tag-3=""></pre></span
-                    >{{ item.productDetailCartDto.price | number }} đ</span
+                    >{{ item.productDetailDTO.price | number }} đ</span
                   >
                 </td>
                 <td [width]="50">
                   <nz-input-number
                     [(ngModel)]="item.amount"
                     [nzMin]="1"
-                    [nzMax]="item.productDetailCartDto.stock"
+                    [nzMax]="item.productDetailDTO.stock"
                     [nzStep]="1"
                     (ngModelChange)="updateQuantity($event, item)"
                   ></nz-input-number>
@@ -59,9 +57,7 @@
                   <span class="amount">
                     <span class="currencySymbol">
                       <pre wp-pre-tag-3=""></pre></span
-                    >{{
-                      item.amount * item.productDetailCartDto.price! | number
-                    }}
+                    >{{ item.amount * item.productDetailDTO.price! | number }}
                     đ
                   </span>
                 </td>

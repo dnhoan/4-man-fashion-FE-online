@@ -54,7 +54,7 @@ export class HeaderComponent implements OnInit {
       .subscribe((res) => {
         this.cartItems = res;
         this.totalMoneyCart = this.cartItems.reduce(
-          (a, b) => a + (b.amount * b.productDetailCartDto.price! || 0),
+          (a, b) => a + (b.amount * b.productDetailDTO.price || 0),
           0
         );
       });
