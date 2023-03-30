@@ -32,7 +32,7 @@ export class CartComponent implements OnInit {
         this.idCart = res.id;
         this.cartItems = res.cartItemDtos;
         this.totalMoneyCart = this.cartItems.reduce(
-          (a, b) => a + (b.amount * b.productDetailCartDto.price! || 0),
+          (a, b) => a + (b.amount * b.productDetailDTO.price! || 0),
           0
         );
       });

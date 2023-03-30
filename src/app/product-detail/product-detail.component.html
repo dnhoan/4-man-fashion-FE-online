@@ -41,64 +41,84 @@
         <div class="single-product-details mt-5 mt-lg-0">
           <h2>{{ product.productName }}</h2>
           <hr />
-          <h3 class="product-price">{{ productDetail.price | number }}đ</h3>
-          <div class="color-swatches mt-4 d-flex align-items-center">
-            <span class="font-weight-bold text-capitalize product-meta-title"
-              >Màu sắc:</span
-            >
-            <ul class="list-inline mb-0 d-flex">
-              <ng-container *ngFor="let color of product.colors">
-                <li
-                  class="list-inline-item options"
-                  [ngStyle]="{
-                    'background-color':
-                      colorSelected && colorSelected.id == color.id
-                        ? '#fb5c42'
-                        : 'white',
-                    color:
-                      colorSelected && colorSelected.id == color.id
-                        ? 'white'
-                        : 'black'
-                  }"
-                  (click)="selectedColor(color)"
-                >
-                  <a
+          <ng-container
+            *ngIf="product.productDetailSelected; else showMinMaxPrice"
+          >
+            <h3 class="product-price">
+              {{ product.productDetailSelected.price | number }}đ
+            </h3></ng-container
+          >
+          <ng-template #showMinMaxPrice>
+            <h3 class="product-price">
+              {{
+                product.minPrice == product.maxPrice
+                  ? (product.maxPrice | number)
+                  : (product.minPrice | number) +
+                    " - " +
+                    (product.maxPrice | number)
+              }}đ
+            </h3></ng-template
+          >
+          <ng-container *ngIf="product.colors && product.colors.length">
+            <div class="color-swatches mt-4 d-flex align-items-center">
+              <span class="font-weight-bold text-capitalize product-meta-title"
+                >Màu sắc:</span
+              >
+              <ul class="list-inline mb-0 d-flex">
+                <ng-container *ngFor="let color of product.colors">
+                  <li
+                    class="list-inline-item options"
                     [ngStyle]="{
-                      'background-color': color.colorCode,
-                      border: '1px solid #eee'
+                      'background-color':
+                        colorSelected && colorSelected.id == color.id
+                          ? '#fb5c42'
+                          : 'white',
+                      color:
+                        colorSelected && colorSelected.id == color.id
+                          ? 'white'
+                          : 'black'
                     }"
-                  ></a>
-                  <span>{{ color.colorName }}</span>
-                </li>
-              </ng-container>
-            </ul>
-          </div>
-
-          <div class="product-size d-flex align-items-center mt-4">
-            <span class="font-weight-bold text-capitalize product-meta-title"
-              >Kích cỡ:</span
-            >
-            <ul class="list-inline mb-0 d-flex">
-              <ng-container *ngFor="let size of product.sizes">
-                <li
-                  class="list-inline-item options"
-                  [ngStyle]="{
-                    'background-color':
-                      sizeSelected && sizeSelected.id == size.id
-                        ? '#fb5c42'
-                        : 'white',
-                    color:
-                      sizeSelected && sizeSelected.id == size.id
-                        ? 'white'
-                        : 'black'
-                  }"
-                  (click)="selectedSize(size)"
-                >
-                  <span>{{ size.sizeName }}</span>
-                </li>
-              </ng-container>
-            </ul>
-          </div>
+                    (click)="selectedColor(color)"
+                  >
+                    <a
+                      [ngStyle]="{
+                        'background-color': color.colorCode,
+                        border: '1px solid #eee'
+                      }"
+                    ></a>
+                    <span>{{ color.colorName }}</span>
+                  </li>
+                </ng-container>
+              </ul>
+            </div></ng-container
+          >
+          <ng-container *ngIf="product.sizes && product.sizes.length">
+            <div class="product-size d-flex align-items-center mt-4">
+              <span class="font-weight-bold text-capitalize product-meta-title"
+                >Kích cỡ:</span
+              >
+              <ul class="list-inline mb-0 d-flex">
+                <ng-container *ngFor="let size of product.sizes">
+                  <li
+                    class="list-inline-item options"
+                    [ngStyle]="{
+                      'background-color':
+                        sizeSelected && sizeSelected.id == size.id
+                          ? '#fb5c42'
+                          : 'white',
+                      size:
+                        sizeSelected && sizeSelected.id == size.id
+                          ? 'white'
+                          : 'black'
+                    }"
+                    (click)="selectedSize(size)"
+                  >
+                    <span>{{ size.sizeName }}</span>
+                  </li>
+                </ng-container>
+              </ul>
+            </div></ng-container
+          >
           <div class="product-size d-flex align-items-center mt-4">
             <span class="font-weight-bold text-capitalize product-meta-title"
               >Số lượng:</span
@@ -112,13 +132,16 @@
                   width="200px"
                   class="input-text qty text form-control w-10 mr-3"
                   step="1"
-                  min="1"
-                  [max]="productDetail.stock"
+                  [min]="product.stock ? 1 : 0"
+                  [max]="product.stock ? product.stock : 0"
                   name="quantity"
                   title="Qty"
                   size="4"
                   required
                 />
+                <p class="mb-0">
+                  {{ product.stock ? product.stock : 0 }} sản phẩm
+                </p>
               </div>
             </ul>
           </div>
@@ -126,8 +149,11 @@
             <a (click)="addToCart()" class="btn btn-add-to-cart btn-small"
               ><i class="bi bi-bag-plus"></i> Thêm vào giỏ hàng</a
             >
-            <a style="width: 49%" class="btn btn-main btn-small"
-              ><i class="bi bi-bag-check-fill"></i> Mua ngay</a
+            <a
+              style="width: 49%"
+              class="btn btn-main btn-small"
+              (click)="addToFavorite()"
+              ><i class="tf-ion-ios-heart"></i>Thêm vào yêu thích</a
             >
           </div>
           <div class="products-meta mt-4">

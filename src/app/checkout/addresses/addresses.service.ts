@@ -78,10 +78,10 @@ export class AddressesService {
         })
       );
   }
-  deleteAddressByCustomerId(customerId: number) {
+  deleteAddressById(id: number) {
     return this.requestService
       .delete(
-        `${environment.baseUrl}/api/user/customerAddress/delete/${customerId}`,
+        `${environment.baseUrl}/api/user/customerAddress/delete/${id}`,
         'xóa địa chỉ'
       )
       .pipe(
@@ -89,7 +89,7 @@ export class AddressesService {
           if (res.code == '000') {
             return true;
           } else {
-            this.commonService.error('Lỗi lấy xóa địa chỉ');
+            this.commonService.error('Lỗi xóa địa chỉ');
             return false;
           }
         })

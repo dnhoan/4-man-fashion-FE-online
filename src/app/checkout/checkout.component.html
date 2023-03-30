@@ -1,172 +1,344 @@
-<div class="page-wrapper">
-  <div class="checkout shopping">
-    <h1 class="text-center">Thanh toán</h1>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 pr-5">
-          <div class="billing-details">
-            <h4 class="mb-4">Thông tin giao hàng</h4>
-            <form [formGroup]="formCheckout">
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="recipientName">Họ và tên</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="recipientName"
-                      formControlName="recipientName"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="recipientPhone">Số điện thoại </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="recipientPhone"
-                      formControlName="recipientPhone"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="recipientEmail">Email</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="recipientEmail"
-                      formControlName="recipientEmail"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group mb-4">
-                    <label for="recipientAddress">Street Address</label>
-                    <div class="d-flex justify-content-between">
-                      <nz-select
-                        class="w-100"
+<ng-container *ngIf="!isCreateOrderSuccess; else infoOrder">
+  <div class="page-wrapper">
+    <div class="checkout shopping">
+      <h1 class="text-center">Thanh toán</h1>
+      <form [formGroup]="formCheckout" #form="ngForm" (ngSubmit)="checkout()">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 pr-5">
+              <div class="billing-details">
+                <h4 class="mb-4">Thông tin giao hàng</h4>
+
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="recipientName">Họ và tên</label>
+                      <input
+                        nz-input
+                        formControlName="recipientName"
+                        id="recipientName"
                         nzSize="large"
-                        id="recipientAddress"
-                        formControlName="recipientAddress"
+                      />
+                      <ng-container
+                        *ngIf="formCheckout.get('recipientName')!.invalid"
                       >
-                        <nz-option
-                          *ngFor="let address of addresses; index as i"
-                          [nzValue]="address"
-                          nzCustomContent
-                          nzLabel="{{
-                            address.detail +
-                              ', ' +
-                              address.ward +
-                              ', ' +
-                              address.district +
-                              ', ' +
-                              address.district
-                          }}"
+                        <span
+                          class="mt-1 text-danger"
+                          *ngIf="
+                            formCheckout.get('recipientName')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("recipientName")?.errors)![
+                              "empty"
+                            ]
+                          }}</span
                         >
-                          <div class="d-flex justify-content-between">
-                            <span>{{
-                            address.detail +
-                              ', ' +
-                              address.ward +
-                              ', ' +
-                              address.district +
-                              ', ' +
-                              address.district
-                            }}</span>
-                            <span
-                              class="text-danger"
-                              nz-icon
-                              nzType="close"
-                              nzTheme="outline"
-                              (click)="
-                                $event.stopPropagation();
-                                removeAddress(address, i)
-                              "
-                            ></span>
-                          </div>
-                        </nz-option>
-                      </nz-select>
-                      <a
-                        class="text-primary"
-                        nz-button
-                        (click)="editAddress()"
-                        nzSize="large"
-                        nzType="link"
-                      >
-                        <span nz-icon nzType="edit" nzTheme="outline"></span>
-                      </a>
+                      </ng-container>
                     </div>
-                    <button
-                      nz-button
-                      (click)="addAddress()"
-                      nzSize="large"
-                      class="mt-2"
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="recipientPhone">Số điện thoại </label>
+                      <input
+                        nz-input
+                        formControlName="recipientPhone"
+                        id="recipientPhone"
+                        nzSize="large"
+                      />
+                      <ng-container
+                        *ngIf="formCheckout.get('recipientPhone')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger"
+                          *ngIf="
+                            formCheckout.get('recipientPhone')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("recipientPhone")?.errors)![
+                              "phoneNumber"
+                            ]
+                          }}</span
+                        >
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="recipientEmail">Email</label>
+                      <input
+                        nz-input
+                        formControlName="recipientEmail"
+                        id="recipientEmail"
+                        nzSize="large"
+                      />
+                      <ng-container
+                        *ngIf="formCheckout.get('recipientEmail')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger"
+                          *ngIf="
+                            formCheckout.get('recipientEmail')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("recipientEmail")?.errors)![
+                              "email"
+                            ]
+                          }}</span
+                        >
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="address">Địa chỉ nhận hàng</label>
+                      <div class="d-flex justify-content-between">
+                        <nz-select
+                          class="w-100"
+                          nzSize="large"
+                          id="address"
+                          formControlName="address"
+                          (ngModelChange)="changeAddress()"
+                        >
+                          <nz-option
+                            *ngFor="let address of addresses; index as i"
+                            [nzValue]="address"
+                            nzCustomContent
+                            nzLabel="{{
+                              address.detail +
+                                ', ' +
+                                address.ward +
+                                ', ' +
+                                address.district +
+                                ', ' +
+                                address.district
+                            }}"
+                          >
+                            <div class="d-flex justify-content-between">
+                              <span>{{
+                                address.detail +
+                                  ", " +
+                                  address.ward +
+                                  ", " +
+                                  address.district +
+                                  ", " +
+                                  address.district
+                              }}</span>
+                              <span
+                                class="text-danger"
+                                nz-icon
+                                nzType="close"
+                                nzTheme="outline"
+                                (click)="
+                                  $event.stopPropagation();
+                                  removeAddress(address, i)
+                                "
+                              ></span>
+                            </div>
+                          </nz-option>
+                        </nz-select>
+
+                        <a
+                          class="text-primary"
+                          nz-button
+                          (click)="editAddress()"
+                          nzSize="large"
+                          nzType="link"
+                        >
+                          <span nz-icon nzType="edit" nzTheme="outline"></span>
+                        </a>
+                      </div>
+                      <ng-container
+                        *ngIf="formCheckout.get('address')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger row col-12"
+                          *ngIf="
+                            formCheckout.get('address')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("address")?.errors)!["required"]
+                              ? "Vui lòng chọn địa chỉ"
+                              : ""
+                          }}</span
+                        >
+                      </ng-container>
+                      <button
+                        nz-button
+                        (click)="addAddress()"
+                        nzSize="large"
+                        class="mt-2"
+                      >
+                        Thêm địa chỉ
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="note">Ghi chú</label>
+                      <textarea
+                        class="form-control"
+                        formControlName="note"
+                        id="note"
+                        cols="30"
+                        rows="5"
+                        placeholder="Ghi chú đơn hàng"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order sidebar Summery -->
+            <div class="col-md-6 col-lg-4">
+              <div class="product-checkout-details mt-5 mt-lg-0">
+                <h4 class="mb-4 border-bottom pb-4">Sản phẩm</h4>
+                <div class="media" *ngFor="let item of cartItems">
+                  <a routerLink="/product-single">
+                    <img
+                      style="width: 100px"
+                      src="https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0"
+                      alt="image"
+                    />
+                  </a>
+                  <div class="media-body">
+                    <h6>
+                      {{ item.productDetailDTO.productDetailName }}
+                    </h6>
+                    <div class="cart-price">
+                      <span>{{ item.amount }} x</span>
+                      <span>{{ item.productDetailDTO.price | number }} đ</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- / Cart Item -->
+                <div class="cart-summary">
+                  <div class="d-flex justify-content-between">
+                    <span class="h6">Tiền hàng</span>
+                    <span class="total-price h6"
+                      >{{ totalMoneyCart | number }} đ</span
                     >
-                      Thêm địa chỉ
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span class="h6">Phí ship</span>
+                    <span class="total-price h6">{{ shipFee | number }} đ</span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span class="h6">Tổng tiền</span>
+                    <span class="total-price h6"
+                      >{{ totalMoneyCart + shipFee | number }} đ</span
+                    >
+                  </div>
+
+                  <div class="text-center cart-buttons mt-3">
+                    <button
+                      type="submit"
+                      class="btn btn-small btn-main btn-block"
+                    >
+                      Thanh toán
                     </button>
                   </div>
                 </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="note">Ghi chú</label>
-                    <textarea
-                      class="form-control"
-                      formControlName="note"
-                      id="note"
-                      cols="30"
-                      rows="5"
-                      placeholder="Ghi chú đơn hàng"
-                    ></textarea>
-                  </div>
-                </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-
-        <!-- Order sidebar Summery -->
-        <div class="col-md-6 col-lg-4">
-          <div class="product-checkout-details mt-5 mt-lg-0">
-            <h4 class="mb-4 border-bottom pb-4">Sản phẩm</h4>
-            <div class="media" *ngFor="let item of cartItems">
-              <a routerLink="/product-single">
-                <img
-                  style="width: 100px"
-                  src="https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0"
-                  alt="image"
-                />
-              </a>
-              <div class="media-body">
-                <h6>
-                  {{ item.productDetailCartDto.productDetailName }}
-                </h6>
-                <div class="cart-price">
-                  <span>{{ item.amount }} x</span>
-                  <span>{{ item.productDetailCartDto.price | number }} đ</span>
-                </div>
-              </div>
-            </div>
-            <!-- / Cart Item -->
-            <div class="cart-summary">
-              <span class="h6">Tổng tiền</span>
-              <span class="total-price h6"
-                >{{ totalMoneyCart | number }} đ</span
-              >
-
-              <div class="text-center cart-buttons mt-3">
-                <a (click)="checkout()" class="btn btn-small btn-main btn-block"
-                  >Thanh toán</a
-                >
-              </div>
-            </div>
-          </div>
+      </form>
+    </div>
+  </div></ng-container
+>
+<ng-template #infoOrder>
+  <div class="container">
+    <h3 class="text-success text-center mt-3">
+      <b>Tạo đơn hàng thành công!</b>
+    </h3>
+    <p class="text-success text-center">
+      <b
+        >Đơn hàng chưa thanh toán. Bạn hãy tiến hành thanh toán để hoàn thành
+        việc đặt hàng!</b
+      >
+    </p>
+    <div class="bg-white rounded-3 mb-3">
+      <div class="d-flex">
+        <div class="border-end m-3 pe-3">
+          <p><b>Mã đơn hàng</b></p>
+          <p>HD{{ order.id }}</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Ngày tạo</b></p>
+          <p>
+            {{ order.ctime | date }}
+          </p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Tổng tiền hàng</b></p>
+          <p>{{ order.goodsValue | number }}đ</p>
+        </div>
+        <div *ngIf="order.delivery == 1" class="border-end m-3 pe-3">
+          <p><b>Phí vận chuyển</b></p>
+          <p>{{ order.shipFee | number }}đ</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Tổng tiền</b></p>
+          <p>{{ order.totalMoney | number }}đ</p>
         </div>
       </div>
     </div>
+    <div class="bg-white rounded-3 p-3 mb-3">
+      <p><b>Thông tin người nhận</b></p>
+      <div class="">
+        <p><b>Tên người nhận: </b>{{ order.recipientName }}</p>
+        <p><b>Địa chỉ người nhận: </b>{{ order.address }}</p>
+        <p><b>SĐT người nhận: </b>{{ order.recipientPhone }}</p>
+        <p><b>Email người nhận: </b>{{ order.recipientEmail }}</p>
+        <p><b>Ghi chú: </b>{{ order.note }}</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-3 p-3 mb-4">
+      <p><b>Thông tin đơn hàng</b></p>
+      <div class="mb-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Ảnh</th>
+              <th scope="col">Sảm phẩm</th>
+              <th scope="col">SL</th>
+              <th scope="col">Đơn giá</th>
+              <th scope="col">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orderDetail of order.orderDetails">
+              <td>
+                <!-- <img
+                [src]="orderDetail.pro.image"
+                alt=""
+                width="50"
+              /> -->
+              </td>
+              <td>{{ orderDetail.productDetail.productDetailName }}</td>
+              <td>{{ orderDetail.quantity }}</td>
+              <td>{{ orderDetail.price | number }} đ</td>
+              <td>{{ orderDetail.quantity * orderDetail.price! | number }}đ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="d-flex justify-content-end text-danger">
+        <b>Tổng tiền: {{ order.totalMoney | number }}đ</b>
+      </p>
+      <div class="d-flex justify-content-end">
+        <a (click)="returnHome()" class="btn btn-add-to-cart btn-small">
+          Tiếp tục mua hàng
+        </a>
+        <a (click)="returnOrders()" class="btn btn-main btn-small">
+          Xem đơn hàng
+        </a>
+      </div>
+    </div>
   </div>
-</div>
+</ng-template>

@@ -31,7 +31,7 @@ export interface Product {
 
 export interface ProductDTO {
   id: number;
-  productId: string;
+  productId: number;
   productName?: string;
   description?: String;
   detail?: string;
@@ -46,11 +46,18 @@ export interface ProductDTO {
   ctime?: Date;
   mtime?: Date;
   expand?: boolean;
-  sizes?: Size[];
-  colors?: Color[];
   productImages?: {
     id?: number;
     image: string;
   }[];
   productDetails: ProductDetailDTO[];
+  sizeSelected?: Size;
+  colorSelected?: Color;
+  productDetailSelected?: ProductDetailDTO;
+  sizes?: Size[];
+  minPrice?: number;
+  maxPrice?: number;
+  colors?: Color[];
+  amount?: number;
+  stock?: number;
 }
