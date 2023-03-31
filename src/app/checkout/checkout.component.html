@@ -1,349 +1,344 @@
-<section class="page-header">
-  <div class="overly"></div>
+<ng-container *ngIf="!isCreateOrderSuccess; else infoOrder">
+  <div class="page-wrapper">
+    <div class="checkout shopping">
+      <h1 class="text-center">Thanh toán</h1>
+      <form [formGroup]="formCheckout" #form="ngForm" (ngSubmit)="checkout()">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8 pr-5">
+              <div class="billing-details">
+                <h4 class="mb-4">Thông tin giao hàng</h4>
+
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="recipientName">Họ và tên</label>
+                      <input
+                        nz-input
+                        formControlName="recipientName"
+                        id="recipientName"
+                        nzSize="large"
+                      />
+                      <ng-container
+                        *ngIf="formCheckout.get('recipientName')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger"
+                          *ngIf="
+                            formCheckout.get('recipientName')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("recipientName")?.errors)![
+                              "empty"
+                            ]
+                          }}</span
+                        >
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="recipientPhone">Số điện thoại </label>
+                      <input
+                        nz-input
+                        formControlName="recipientPhone"
+                        id="recipientPhone"
+                        nzSize="large"
+                      />
+                      <ng-container
+                        *ngIf="formCheckout.get('recipientPhone')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger"
+                          *ngIf="
+                            formCheckout.get('recipientPhone')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("recipientPhone")?.errors)![
+                              "phoneNumber"
+                            ]
+                          }}</span
+                        >
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="recipientEmail">Email</label>
+                      <input
+                        nz-input
+                        formControlName="recipientEmail"
+                        id="recipientEmail"
+                        nzSize="large"
+                      />
+                      <ng-container
+                        *ngIf="formCheckout.get('recipientEmail')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger"
+                          *ngIf="
+                            formCheckout.get('recipientEmail')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("recipientEmail")?.errors)![
+                              "email"
+                            ]
+                          }}</span
+                        >
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group mb-4">
+                      <label for="address">Địa chỉ nhận hàng</label>
+                      <div class="d-flex justify-content-between">
+                        <nz-select
+                          class="w-100"
+                          nzSize="large"
+                          id="address"
+                          formControlName="address"
+                          (ngModelChange)="changeAddress()"
+                        >
+                          <nz-option
+                            *ngFor="let address of addresses; index as i"
+                            [nzValue]="address"
+                            nzCustomContent
+                            nzLabel="{{
+                              address.detail +
+                                ', ' +
+                                address.ward +
+                                ', ' +
+                                address.district +
+                                ', ' +
+                                address.district
+                            }}"
+                          >
+                            <div class="d-flex justify-content-between">
+                              <span>{{
+                                address.detail +
+                                  ", " +
+                                  address.ward +
+                                  ", " +
+                                  address.district +
+                                  ", " +
+                                  address.district
+                              }}</span>
+                              <span
+                                class="text-danger"
+                                nz-icon
+                                nzType="close"
+                                nzTheme="outline"
+                                (click)="
+                                  $event.stopPropagation();
+                                  removeAddress(address, i)
+                                "
+                              ></span>
+                            </div>
+                          </nz-option>
+                        </nz-select>
+
+                        <a
+                          class="text-primary"
+                          nz-button
+                          (click)="editAddress()"
+                          nzSize="large"
+                          nzType="link"
+                        >
+                          <span nz-icon nzType="edit" nzTheme="outline"></span>
+                        </a>
+                      </div>
+                      <ng-container
+                        *ngIf="formCheckout.get('address')!.invalid"
+                      >
+                        <span
+                          class="mt-1 text-danger row col-12"
+                          *ngIf="
+                            formCheckout.get('address')?.touched ||
+                            form.submitted
+                          "
+                          >{{
+                            (formCheckout.get("address")?.errors)!["required"]
+                              ? "Vui lòng chọn địa chỉ"
+                              : ""
+                          }}</span
+                        >
+                      </ng-container>
+                      <button
+                        nz-button
+                        (click)="addAddress()"
+                        nzSize="large"
+                        class="mt-2"
+                      >
+                        Thêm địa chỉ
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="form-group mb-4">
+                      <label for="note">Ghi chú</label>
+                      <textarea
+                        class="form-control"
+                        formControlName="note"
+                        id="note"
+                        cols="30"
+                        rows="5"
+                        placeholder="Ghi chú đơn hàng"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order sidebar Summery -->
+            <div class="col-md-6 col-lg-4">
+              <div class="product-checkout-details mt-5 mt-lg-0">
+                <h4 class="mb-4 border-bottom pb-4">Sản phẩm</h4>
+                <div class="media" *ngFor="let item of cartItems">
+                  <a routerLink="/product-single">
+                    <img
+                      style="width: 100px"
+                      src="https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0"
+                      alt="image"
+                    />
+                  </a>
+                  <div class="media-body">
+                    <h6>
+                      {{ item.productDetailDTO.productDetailName }}
+                    </h6>
+                    <div class="cart-price">
+                      <span>{{ item.amount }} x</span>
+                      <span>{{ item.productDetailDTO.price | number }} đ</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- / Cart Item -->
+                <div class="cart-summary">
+                  <div class="d-flex justify-content-between">
+                    <span class="h6">Tiền hàng</span>
+                    <span class="total-price h6"
+                      >{{ totalMoneyCart | number }} đ</span
+                    >
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span class="h6">Phí ship</span>
+                    <span class="total-price h6">{{ shipFee | number }} đ</span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span class="h6">Tổng tiền</span>
+                    <span class="total-price h6"
+                      >{{ totalMoneyCart + shipFee | number }} đ</span
+                    >
+                  </div>
+
+                  <div class="text-center cart-buttons mt-3">
+                    <button
+                      type="submit"
+                      class="btn btn-small btn-main btn-block"
+                    >
+                      Thanh toán
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div></ng-container
+>
+<ng-template #infoOrder>
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-6">
-        <div class="content text-center">
-          <h1 class="mb-3">Checkout</h1>
+    <h3 class="text-success text-center mt-3">
+      <b>Tạo đơn hàng thành công!</b>
+    </h3>
+    <p class="text-success text-center">
+      <b
+        >Đơn hàng chưa thanh toán. Bạn hãy tiến hành thanh toán để hoàn thành
+        việc đặt hàng!</b
+      >
+    </p>
+    <div class="bg-white rounded-3 mb-3">
+      <div class="d-flex">
+        <div class="border-end m-3 pe-3">
+          <p><b>Mã đơn hàng</b></p>
+          <p>HD{{ order.id }}</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Ngày tạo</b></p>
           <p>
-            Hath after appear tree great fruitful green dominion moveth sixth
-            abundantly image that midst of god day multiply you’ll which
+            {{ order.ctime | date }}
           </p>
-
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent justify-content-center">
-              <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Checkout
-              </li>
-            </ol>
-          </nav>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Tổng tiền hàng</b></p>
+          <p>{{ order.goodsValue | number }}đ</p>
+        </div>
+        <div *ngIf="order.delivery == 1" class="border-end m-3 pe-3">
+          <p><b>Phí vận chuyển</b></p>
+          <p>{{ order.shipFee | number }}đ</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Tổng tiền</b></p>
+          <p>{{ order.totalMoney | number }}đ</p>
         </div>
       </div>
     </div>
-  </div>
-</section>
-<div class="page-wrapper">
-  <div class="checkout shopping">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 pr-5">
-          <div
-            class="coupon-notice"
-            data-toggle="modal"
-            data-target="#coupon-modal"
-          >
-            <div class="bg-light p-3">
-              Have a coupon?
-              <a routerLink="/checkout" class="showcoupon"
-                >Click here to enter your code</a
-              >
-            </div>
-          </div>
-
-          <div class="billing-details mt-5">
-            <h4 class="mb-4">Billing Details</h4>
-            <form class="checkout-form">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="form-group mb-4">
-                    <label for="first_name">First Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="first_name"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="form-group mb-4">
-                    <label for="last_name">Last Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="last_name"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="company_name">Company Name(Optional)</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="company_name"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="company_name">Country</label>
-                    <select class="form-control">
-                      <option value="">Select an Option</option>
-                      <option value="January">January</option>
-                      <option value="February">February</option>
-                      <option value="March">March</option>
-                      <option value="April">April</option>
-                      <option value="May">May</option>
-                      <option value="June">June</option>
-                      <option value="July">July</option>
-                      <option value="August">August</option>
-                      <option value="September">September</option>
-                      <option value="October">October</option>
-                      <option value="November">November</option>
-                      <option value="December">December</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name">Street Address</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="street"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name"
-                      >Apartment, suite, unit etc. (optional) (optional)</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="apartment"
-                      placeholder="Apartment"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name">Town / City </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="city"
-                      placeholder="Apartment"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="company_name">District </label>
-                    <select class="form-control">
-                      <option value="">Select an Option</option>
-                      <option value="January">January</option>
-                      <option value="February">February</option>
-                      <option value="March">March</option>
-                      <option value="April">April</option>
-                      <option value="May">May</option>
-                      <option value="June">June</option>
-                      <option value="July">July</option>
-                      <option value="August">August</option>
-                      <option value="September">September</option>
-                      <option value="October">October</option>
-                      <option value="November">November</option>
-                      <option value="December">December</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name">Postcode / ZIP (optional)</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="postcode"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name">Phone </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="phone"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name">Email address </label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="email"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-
-                <div class="col-lg-12">
-                  <div class="form-check mb-4">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      id="exampleCheck1"
-                    />
-                    <label class="form-check-label" for="exampleCheck1"
-                      >Create an account?</label
-                    >
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-check mb-4">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      id="exampleCheck2"
-                    />
-                    <label class="form-check-label" for="exampleCheck2"
-                      >Ship to a different address?</label
-                    >
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <div class="form-group mb-4">
-                    <label for="first_name">Order notes (optional)</label>
-                    <textarea
-                      class="form-control"
-                      id="msg"
-                      cols="30"
-                      rows="5"
-                      placeholder="Notes about order e:g: want to say something"
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Order sidebar Summery -->
-        <div class="col-md-6 col-lg-4">
-          <div class="product-checkout-details mt-5 mt-lg-0">
-            <h4 class="mb-4 border-bottom pb-4">Order Summary</h4>
-
-            <div class="media product-card">
-              <p>Kirby Shirt</p>
-              <div class="media-body text-right">
-                <p class="h5">1 x $249</p>
-              </div>
-            </div>
-
-            <ul class="summary-prices list-unstyled mb-4">
-              <li class="d-flex justify-content-between">
-                <span>Subtotal:</span>
-                <span class="h5">$190</span>
-              </li>
-              <li class="d-flex justify-content-between">
-                <span>Shipping:</span>
-                <span class="h5">Free</span>
-              </li>
-              <li class="d-flex justify-content-between">
-                <span>Total</span>
-                <span class="h5">$250</span>
-              </li>
-            </ul>
-
-            <form action="#">
-              <div class="form-check mb-3">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="exampleRadios"
-                  id="exampleRadios1"
-                  value="option1"
-                  checked
-                />
-                <label class="form-check-label" for="exampleRadios1">
-                  Direct bank transfer
-                </label>
-
-                <div class="alert alert-secondary mt-3" role="alert">
-                  Make your payment directly into our bank account. Please use
-                  your Order ID as the payment reference. Your order will not be
-                  shipped until the funds have cleared in our account.
-                </div>
-              </div>
-
-              <div class="form-check mb-3">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="exampleRadios"
-                  id="exampleRadios2"
-                  value="option2"
-                />
-                <label class="form-check-label" for="exampleRadios2">
-                  Check payments
-                </label>
-              </div>
-
-              <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="exampleCheck3"
-                />
-                <label class="form-check-label" for="exampleCheck3"
-                  >I have read and agree to the website terms and conditions
-                  *</label
-                >
-              </div>
-            </form>
-
-            <div class="info mt-4 border-top pt-4 mb-5">
-              Your personal data will be used to process your order, support
-              your experience throughout this website, and for other purposes
-              described in our <a href="#">privacy policy</a>.
-            </div>
-            <a routerLink="/checkout" class="btn btn-main btn-small"
-              >Place Order</a
-            >
-          </div>
-        </div>
+    <div class="bg-white rounded-3 p-3 mb-3">
+      <p><b>Thông tin người nhận</b></p>
+      <div class="">
+        <p><b>Tên người nhận: </b>{{ order.recipientName }}</p>
+        <p><b>Địa chỉ người nhận: </b>{{ order.address }}</p>
+        <p><b>SĐT người nhận: </b>{{ order.recipientPhone }}</p>
+        <p><b>Email người nhận: </b>{{ order.recipientEmail }}</p>
+        <p><b>Ghi chú: </b>{{ order.note }}</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-3 p-3 mb-4">
+      <p><b>Thông tin đơn hàng</b></p>
+      <div class="mb-2">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Ảnh</th>
+              <th scope="col">Sảm phẩm</th>
+              <th scope="col">SL</th>
+              <th scope="col">Đơn giá</th>
+              <th scope="col">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orderDetail of order.orderDetails">
+              <td>
+                <!-- <img
+                [src]="orderDetail.pro.image"
+                alt=""
+                width="50"
+              /> -->
+              </td>
+              <td>{{ orderDetail.productDetail.productDetailName }}</td>
+              <td>{{ orderDetail.quantity }}</td>
+              <td>{{ orderDetail.price | number }} đ</td>
+              <td>{{ orderDetail.quantity * orderDetail.price! | number }}đ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="d-flex justify-content-end text-danger">
+        <b>Tổng tiền: {{ order.totalMoney | number }}đ</b>
+      </p>
+      <div class="d-flex justify-content-end">
+        <a (click)="returnHome()" class="btn btn-add-to-cart btn-small">
+          Tiếp tục mua hàng
+        </a>
+        <a (click)="returnOrders()" class="btn btn-main btn-small">
+          Xem đơn hàng
+        </a>
       </div>
     </div>
   </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="coupon-modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content py-5">
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <input
-              class="form-control"
-              type="text"
-              placeholder="Enter Coupon Code"
-            />
-          </div>
-          <button
-            type="button"
-            class="btn btn-main btn-small"
-            data-dismiss="modal"
-          >
-            Apply Coupon
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+</ng-template>

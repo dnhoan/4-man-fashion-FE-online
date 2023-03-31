@@ -609,7 +609,7 @@ a.text-primary:hover {
 }
 
 .navigation .dropdown-slide .cart-dropdown {
-  width: 290px !important;
+  width: 450px !important;
   padding: 35px 20px;
   right: -40px;
   -webkit-transform: translateY(25px);
@@ -695,7 +695,7 @@ a.text-primary:hover {
 
 .cart-dropdown .remove {
   padding: 1px 6px;
-  position: absolute;
+  position: relative;
   right: 0;
   top: 0;
   color: #000 !important;

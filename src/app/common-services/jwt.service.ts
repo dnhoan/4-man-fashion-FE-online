@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CommonConstants } from '../constants/common-constants';
+import { customerStore } from '../dashboard/customer.repository';
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +19,12 @@ export class JwtService {
 
   public setJwtToken(token: string) {
     localStorage.setItem(CommonConstants.TOKEN_KEY, token);
+    this.getDecodedAccessToken();
   }
 
   public removeJwtToken(): void {
     localStorage.removeItem(CommonConstants.TOKEN_KEY);
+    customerStore.update(() => ({ customer: null }));
     this.router.navigate(['login']);
   }
 
@@ -29,7 +32,21 @@ export class JwtService {
     const token = this.getJwtToken();
     return this.jwtHelper.isTokenExpired(token);
   }
-  isLoggedIn(): boolean {
+
+  getDecodedAccessToken() {
+    if (!this.isAuthenticated()) {
+      customerStore.update(() => ({ customer: null }));
+    }
+    const token = localStorage.getItem(CommonConstants.TOKEN_KEY);
+    try {
+      let decode = this.jwtHelper.decodeToken(token!);
+      customerStore.update(() => ({ customer: decode?.info.customerDto }));
+    } catch (Error) {
+      customerStore.update(() => ({ customer: null }));
+    }
+  }
+
+  isAuthenticated(): boolean {
     const token = localStorage.getItem(CommonConstants.TOKEN_KEY);
 
     return token && !this.isTokenExpired() ? true : false;

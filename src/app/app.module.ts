@@ -10,17 +10,12 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ProductsComponent } from './products/products.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { OrdersComponent } from './orders/orders.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { ProfileDetailsComponent } from './profile-details/profile-details.component';
-import { AddressComponent } from './address/address.component';
-import { EditAddressComponent } from './edit-address/edit-address.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './common-services/auth.service';
 import { JwtService } from './common-services/jwt.service';
@@ -31,6 +26,14 @@ import {
 } from '@auth0/angular-jwt';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonConstants } from './constants/common-constants';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US } from 'ng-zorro-antd/i18n';
+import en from '@angular/common/locales/en';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module';
+import { AddressesComponent } from './checkout/addresses/addresses.component';
+
+registerLocaleData(en);
 
 @NgModule({
   declarations: [
@@ -42,14 +45,10 @@ import { CommonConstants } from './constants/common-constants';
     CartComponent,
     CheckoutComponent,
     ProductsComponent,
-    DashboardComponent,
-    OrdersComponent,
     LoginComponent,
     SignupComponent,
     ForgotPasswordComponent,
-    ProfileDetailsComponent,
-    AddressComponent,
-    EditAddressComponent,
+    AddressesComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +58,7 @@ import { CommonConstants } from './constants/common-constants';
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgZorroAntdModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem(CommonConstants.TOKEN_KEY),
@@ -66,6 +66,7 @@ import { CommonConstants } from './constants/common-constants';
         disallowedRoutes: ['example.com/login'],
       },
     }),
+    BrowserAnimationsModule,
   ],
   providers: [
     AuthGuard,
@@ -73,6 +74,7 @@ import { CommonConstants } from './constants/common-constants';
     JwtService,
     JwtHelperService, // Add JwtHelperService to the providers array
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: NZ_I18N, useValue: en_US },
   ],
   bootstrap: [AppComponent],
 })

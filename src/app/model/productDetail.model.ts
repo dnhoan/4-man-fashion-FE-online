@@ -9,8 +9,8 @@ export interface ProductDetail {
   color?: ColorDTO;
   stock: number;
   productDetailCode?: string;
-  productDetailName?: string;
-  price?: number;
+  productDetailName: string;
+  price: number;
   sizeName?: string;
   colorName?: string;
   expand?: boolean;
@@ -26,7 +26,7 @@ export interface ProductDetailDTO {
   stock: number;
   productDetailCode?: string;
   productDetailName?: string;
-  price?: number;
+  price: number;
   sizeName?: string;
   expand?: boolean;
   status?: number;

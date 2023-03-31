@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
+import { JwtService } from './common-services/jwt.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = '4-man-fashion-FE-online';
+  constructor(private readonly jwtService: JwtService) {}
+
+  ngOnInit() {
+    this.jwtService.getDecodedAccessToken();
+  }
 }

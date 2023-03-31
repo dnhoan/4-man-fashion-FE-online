@@ -95,54 +95,45 @@
         </a>
         <div class="dropdown-menu cart-dropdown">
           <!-- Cart Item -->
-          <div class="media">
+          <div class="media" *ngFor="let item of cartItems">
             <a routerLink="/product-single">
               <img
                 class="media-object img- mr-3"
-                src="assets/images/cart-1.jpg"
+                src="https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0"
                 alt="image"
               />
             </a>
             <div class="media-body">
-              <h6>Ladies Bag</h6>
+              <div class="d-flex justify-content-between">
+                <h6>
+                  {{ item.productDetailDTO.productDetailName }}
+                </h6>
+                <a (click)="removeCart(item.id)" class="remove"
+                  ><i class="tf-ion-close"></i
+                ></a>
+              </div>
               <div class="cart-price">
-                <span>1 x</span>
-                <span>1250.00</span>
+                <span>{{ item.amount }} x</span>
+                <span>{{ item.productDetailDTO.price | number }} đ</span>
               </div>
             </div>
-            <a href="#" class="remove"><i class="tf-ion-close"></i></a>
           </div>
           <!-- / Cart Item -->
-
-          <!-- Cart Item -->
-          <div class="media">
-            <a routerLink="/product-single">
-              <img
-                class="media-object img-fluid mr-3"
-                src="assets/images/cart-2.jpg"
-                alt="image"
-              />
-            </a>
-            <div class="media-body">
-              <h6>Skinny Jeans</h6>
-              <div class="cart-price">
-                <span>1 x</span>
-                <span>1250.00</span>
-              </div>
-            </div>
-            <a href="#" class="remove"><i class="tf-ion-close"></i></a>
-          </div>
-          <!-- / Cart Item -->
-
           <div class="cart-summary">
-            <span class="h6">Total</span>
-            <span class="total-price h6">$1799.00</span>
+            <span class="h6">Tổng tiền</span>
+            <span class="total-price h6">{{ totalMoneyCart | number }} đ</span>
 
             <div class="text-center cart-buttons mt-3">
-              <a href="#" class="btn btn-small btn-transparent btn-block"
-                >View Cart</a
+              <a
+                [routerLink]="'cart'"
+                class="btn btn-small btn-transparent btn-block"
+                >Xem giỏ hàng</a
               >
-              <a href="#" class="btn btn-small btn-main btn-block">Checkout</a>
+              <a
+                [routerLink]="'checkout'"
+                class="btn btn-small btn-main btn-block"
+                >Thanh toán</a
+              >
             </div>
           </div>
         </div>

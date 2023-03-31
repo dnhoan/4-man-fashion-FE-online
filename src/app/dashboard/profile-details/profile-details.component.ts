@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JwtService } from '../common-services/jwt.service';
+import { JwtService } from '../../common-services/jwt.service';
 
 @Component({
   selector: 'app-profile-details',
@@ -7,11 +7,7 @@ import { JwtService } from '../common-services/jwt.service';
   styleUrls: ['./profile-details.component.scss'],
 })
 export class ProfileDetailsComponent implements OnInit {
-  constructor(private jwtService: JwtService) {}
+  constructor() {}
 
   ngOnInit(): void {}
-
-  logout() {
-    this.jwtService.removeJwtToken();
-  }
 }
