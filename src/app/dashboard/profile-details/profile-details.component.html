@@ -3,42 +3,75 @@
     <div class="row">
       <div class="tab-pane fade show active" id="settings" role="tabpanel">
         <div class="acccount-settings">
-          <h4 class="mb-4">Account information</h4>
-          <form action="#">
+          <h4 class="mb-4">Thông tin khách hàng</h4>
+          <form [formGroup]="formProfile">
             <div class="form-row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>First Name</label>
-                  <input type="text" class="form-control" placeholder="John" />
-                </div>
+
+              <div class="form-group col-12 mb-4" >
+                <label>Tên khách hàng</label>
+                <input
+                  formControlName="customerName"
+                  type="text"
+                  class="form-control"
+                />
               </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Last Name</label>
-                  <input type="text" class="form-control" placeholder="Jas" />
-                </div>
+              <div class="form-group col-12 mb-4">
+                <label>Số điện thoại</label>
+                <input
+                  formControlName="phoneNumber"
+                  type="text"
+                  class="form-control"
+                />
               </div>
-            </div>
+              </div>
 
             <div class="form-group mb-4">
-              <label>Display name </label>
-              <input type="text" class="form-control" placeholder="Jassa" />
-              <p class="mt-2">
-                This will be how your name will be displayed in the account
-                section and in reviews
-              </p>
-            </div>
-            <div class="form-group mb-4">
-              <label>Email address </label>
+              <label>Ngày sinh </label>
               <input
-                type="text"
+                formControlName="birthday"
+                type="date"
                 class="form-control"
-                placeholder="therichposts@gmail.com"
               />
             </div>
+            <div class="form-group mb-4">
+              <label>Email</label>
+              <input
+                formControlName="email"
+                readonly
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label>Giới tính</label>
+              <select formControlName="gender" id="gender" class="form-control">
+                <option [value]="1">Nam</option>
+                <option [value]="0">Nữ</option>
+              </select>
+            </div>
+            <div class="form-group mb-4">
+              <label>Địa chỉ</label>
+              <input
+                formControlName="address"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label>Ghi chú </label>
+              <input type="text" class="form-control" formControlName="note" />
+            </div>
+            <div class="form-group mb-4">
+              <label>Trạng thái</label>
+              <select formControlName="status" id="status" class="form-control">
+                <option [value]="1">Đang hoạt động</option>
+                <option [value]="0">Dừng hoạt động</option>
+              </select>
+            </div>
+            <a (click)="update()" class="btn btn-dark">Save Changes</a>
           </form>
 
-          <form action="#" class="mt-5">
+          <!-- <form action="#" class="mt-5">
             <h4>Password change</h4>
 
             <div class="form-group">
@@ -54,8 +87,8 @@
               <input type="text" class="form-control" placeholder="" />
             </div>
 
-            <a href="#" class="btn btn-dark">Save Changes</a>
-          </form>
+
+          </form> -->
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { select } from '@ngneat/elf';
-import { deleteEntities } from '@ngneat/elf-entities';
+import { deleteEntities, upsertEntities } from '@ngneat/elf-entities';
 import { addEntities, selectAllEntities } from '@ngneat/elf-entities';
 import { Subscription } from 'rxjs';
 import { cartItemsStore } from '../cart/cart.repository';
@@ -34,6 +34,8 @@ export class HeaderComponent implements OnInit {
     this.subCustomerInfo = customerStore
       .pipe(select((state) => state.customer))
       .subscribe((cus) => {
+        console.log(cus);
+
         if (cus) {
           this.menuItemAccount = [
             { routerLink: 'dashboard', label: 'Thông tin cá nhân' },
@@ -41,7 +43,7 @@ export class HeaderComponent implements OnInit {
             { routerLink: 'dashboard/address', label: 'Địa chỉ' },
           ];
           this.cartService.getProductCartByCusId(cus.id).subscribe((res) => {
-            cartItemsStore.update(addEntities(res.cartItemDtos));
+            cartItemsStore.update(upsertEntities(res.cartItemDtos));
           });
         } else
           this.menuItemAccount = [
