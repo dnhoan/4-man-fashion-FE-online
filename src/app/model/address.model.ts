@@ -1,3 +1,5 @@
+import { CustomerDto } from "./CustomerDto.model";
+
 export interface Address {
   id?: number;
   wardCode?: number;

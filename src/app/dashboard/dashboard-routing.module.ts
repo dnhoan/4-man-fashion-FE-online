@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CartComponent } from '../cart/cart.component';
 import { AddressComponent } from './address/address.component';
+import { EditAddressComponent } from './edit-address/edit-address.component';
 import { DashboardComponent } from './dashboard.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';

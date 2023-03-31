@@ -1,8 +1,8 @@
 export interface CustomerDto {
   id: number;
-  customerName: number;
+  customerName: string;
   gender: number;
-  birthday: string;
+  birthday: Date;
   phoneNumber: string;
   address: string;
   email: string;

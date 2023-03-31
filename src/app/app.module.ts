@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +34,8 @@ import en from '@angular/common/locales/en';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module';
 import { AddressesComponent } from './checkout/addresses/addresses.component';
+import { AddressComponent } from './dashboard/address/address.component';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 
 registerLocaleData(en);
 
@@ -55,9 +59,11 @@ registerLocaleData(en);
     AppRoutingModule,
     SlickCarouselModule,
     FormsModule,
+    NzPaginationModule,
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NzModalModule,
     NgZorroAntdModule,
     JwtModule.forRoot({
       config: {
