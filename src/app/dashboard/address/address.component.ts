@@ -165,7 +165,7 @@ export class AddressComponent implements OnInit {
       .then((res) => {
         if (res.isConfirmed) {
           this.addressService
-            .deleteAddressByCustomerId(this.currentCustomer.id)
+            .deleteAddressById(address.id!)
             .subscribe((res) => {
               if (res) {
                 this.addresss.splice(i, 1);
