@@ -1,3 +1,4 @@
+import { Exchange } from './exchange.model';
 import { ProductDetailDTO } from './productDetail.model';
 
 export interface OrderDetail {
@@ -8,4 +9,5 @@ export interface OrderDetail {
   exchangeId?: number;
   statusExchange?: number;
   statusOrderDetail?: number;
+  exchange?: Exchange;
 }
