@@ -25,7 +25,7 @@ export interface ProductDetailDTO {
   colorName?: string;
   stock: number;
   productDetailCode?: string;
-  productDetailName?: string;
+  productDetailName: string;
   price: number;
   sizeName?: string;
   expand?: boolean;

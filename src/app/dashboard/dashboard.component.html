@@ -1,42 +1,28 @@
-<!-- <section class="page-header">
-  <div class="overly"></div>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-6">
-        <div class="content text-center">
-          <h1 class="mb-3">Dashboard</h1>
-          <p>
-            Hath after appear tree great fruitful green dominion moveth sixth
-            abundantly image that midst of god day multiply you’ll which
-          </p>
-
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent justify-content-center">
-              <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Dashboard
-              </li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
 <section class="user-dashboard page-wrapper">
   <div class="container">
     <div class="row">
       <div class="col-12 col-md-5 col-sm-12 col-lg-3">
-        <div class="nav flex-column nav-pills">
-          <a class="nav-link active" routerLink="profile">Thông tin cá nhân</a>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="order">Đơn hàng</a>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a class="nav-link" routerLink="address">Địa chỉ</a>
-        </div>
+        <!-- <div class="">
+          <div class="image-wrap">
+            <img src="/images/icons/user.svg" alt="" id="action-upload" />
+          </div>
+          <div class="text-header">
+            <p>Xin chào,</p>
+            <p class="name">Nguyen Van Linh</p>
+          </div>
+        </div> -->
+        <ng-container *ngFor="let item of nav">
+          <div class="nav flex-column nav-pills">
+            <a
+              (click)="changeActive(item)"
+              class="nav-link {{
+                item.routerLink == activeNav ? 'active' : ''
+              }}"
+              [routerLink]="item.routerLink"
+              >{{ item.title }}</a
+            >
+          </div>
+        </ng-container>
         <div class="nav flex-column nav-pills">
           <a class="nav-link" (click)="logout()">Log Out</a>
         </div>

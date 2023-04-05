@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -36,9 +35,16 @@ import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module
 import { AddressesComponent } from './checkout/addresses/addresses.component';
 import { AddressComponent } from './dashboard/address/address.component';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-
+import { NZ_CONFIG, NzConfig } from 'ng-zorro-antd/core/config';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { environment } from 'src/environments/environment';
 registerLocaleData(en);
-
+const ngZorroConfig: NzConfig = {
+  theme: {
+    primaryColor: '#fb5c42',
+  },
+};
 @NgModule({
   declarations: [
     AppComponent,
@@ -65,6 +71,8 @@ registerLocaleData(en);
     HttpClientModule,
     NzModalModule,
     NgZorroAntdModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireStorageModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem(CommonConstants.TOKEN_KEY),
@@ -81,6 +89,7 @@ registerLocaleData(en);
     JwtHelperService, // Add JwtHelperService to the providers array
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
+    { provide: NZ_CONFIG, useValue: ngZorroConfig },
   ],
   bootstrap: [AppComponent],
 })

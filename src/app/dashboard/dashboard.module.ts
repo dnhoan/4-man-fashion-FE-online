@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -16,6 +15,10 @@ import { ProfileDetailsComponent } from './profile-details/profile-details.compo
 import { OrdersComponent } from './orders/orders.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditAddressComponent } from './edit-address/edit-address.component';
+import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module';
+import { OrderStatusPipe } from '../pipes/order-status.pipe';
+import { ExchangeComponent } from './orders/exchange/exchange.component';
+import { FormExchangeComponent } from './orders/exchange/form-exchange/form-exchange.component';
 
 @NgModule({
   declarations: [
@@ -24,19 +27,28 @@ import { EditAddressComponent } from './edit-address/edit-address.component';
     AddressComponent,
     EditAddressComponent,
     OrdersComponent,
+    OrderStatusPipe,
+    ExchangeComponent,
+    FormExchangeComponent,
   ],
-  imports: [CommonModule, FormsModule,NzRadioModule, DashboardRoutingModule,ReactiveFormsModule,NzSelectModule,NzModalModule, NzInputModule, NzButtonModule, NzListModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DashboardRoutingModule,
+    ReactiveFormsModule,
+    NgZorroAntdModule,
+  ],
   providers: [
     {
       provide: NzModalRef,
       useValue: {
         getInstance: () => {
           return {
-            setFooterWithTemplate: () => {}
+            setFooterWithTemplate: () => {},
           };
-        }
-      }
-     }
-  ]
+        },
+      },
+    },
+  ],
 })
 export class DashboardModule {}

@@ -111,11 +111,9 @@ export class AddressComponent implements OnInit {
       if (this.currentAddress) {
         console.log(data.id);
 
-        this.addressService
-          .updateCustomerAddress(data)
-          .subscribe((res) => {
-            this.isVisibleModal = false;
-          });
+        this.addressService.updateCustomerAddress(data).subscribe((res) => {
+          this.isVisibleModal = false;
+        });
       } else {
         let customer = customerStore.getValue().customer;
         this.addressService
