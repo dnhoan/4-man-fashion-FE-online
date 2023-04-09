@@ -57,8 +57,15 @@
 
                   <i class="pi pi-tag product-category-icon"></i>
                   <span class="product-category"
-                    >{{ orderDetail.quantity }} x
-                    {{ orderDetail.price | number }}đ</span
+                    >{{
+                      orderDetail.statusOrderDetail ==
+                        ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                      orderDetail.statusOrderDetail ==
+                        ORDER_DETAIL_STATUS.RETURN_PENDING
+                        ? orderDetail.quantityOrigin
+                        : orderDetail.quantity
+                    }}
+                    x {{ orderDetail.price | number }}đ</span
                   >
                   <ng-container
                     *ngIf="
@@ -128,8 +135,13 @@
                 <h6 class="mb-2">
                   <b
                     >{{
-                      orderDetail.productDetail!.price * orderDetail.quantity
-                        | number
+                      orderDetail.productDetail!.price *
+                        (orderDetail.statusOrderDetail ==
+                          ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                        orderDetail.statusOrderDetail ==
+                          ORDER_DETAIL_STATUS.RETURN_PENDING
+                          ? orderDetail.quantityOrigin
+                          : orderDetail.quantity) | number
                     }}đ</b
                   >
                 </h6>
@@ -271,11 +283,25 @@
                 />
               </td>
               <td>{{ orderDetail.productDetail.productDetailName }}</td>
-              <td>{{ orderDetail.quantity }}</td>
+              <td>
+                {{
+                  orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                  orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.RETURN_PENDING
+                    ? orderDetail.quantityOrigin
+                    : orderDetail.quantity
+                }}
+              </td>
               <td>{{ orderDetail.productDetail.price | number }} đ</td>
               <td>
                 {{
-                  orderDetail.quantity * orderDetail.productDetail.price
+                  (orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                  orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.RETURN_PENDING
+                    ? orderDetail.quantityOrigin!
+                    : orderDetail.quantity!) * orderDetail.productDetail.price
                     | number
                 }}đ
               </td>

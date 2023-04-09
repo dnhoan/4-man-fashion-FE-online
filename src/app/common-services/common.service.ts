@@ -103,12 +103,12 @@ export class CommonService {
     },
     {
       status: ORDER_DETAIL_STATUS.RETURN,
-      title: 'Trả hàng',
+      title: 'Trả hàng hoàn tiền',
       color: '#9966ff',
     },
     {
       status: ORDER_DETAIL_STATUS.REJECT_RETURN,
-      title: 'Hủy trả hàng',
+      title: 'Hủy trả hàng hoàn tiền',
       color: '#ff3300',
     },
     {
@@ -118,7 +118,7 @@ export class CommonService {
     },
     {
       status: ORDER_DETAIL_STATUS.RETURN_PENDING,
-      title: 'Chờ xác nhận trả hàng',
+      title: 'Chờ xác nhận trả hàng hoàn tiền',
       color: '#1890ff',
     },
     {

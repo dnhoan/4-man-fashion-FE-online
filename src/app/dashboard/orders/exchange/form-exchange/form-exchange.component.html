@@ -48,7 +48,9 @@
           </div>
           <br />
           <ng-container *ngIf="!images.length && form.submitted">
-            <span id="error">Vui lòng thêm ảnh sản phẩm</span>
+            <span class="text-danger" id="error"
+              >Vui lòng thêm ảnh sản phẩm</span
+            >
           </ng-container>
         </div>
       </div>
@@ -108,7 +110,14 @@
         </h6>
         <i class="pi pi-tag product-category-icon"></i>
         <span class="product-category"
-          >{{ orderDetail.quantity }} x {{ orderDetail.price }}đ</span
+          >{{
+            orderDetail.statusOrderDetail ==
+              ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+            orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
+              ? orderDetail.quantityOrigin
+              : orderDetail.quantity
+          }}
+          x {{ orderDetail.price }}đ</span
         >
       </div>
     </div>
@@ -116,7 +125,13 @@
       <h6 class="mb-2">
         <b
           >{{
-            orderDetail.productDetail!.price * orderDetail.quantity | number
+            orderDetail.productDetail!.price *
+              (orderDetail.statusOrderDetail ==
+                ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+              orderDetail.statusOrderDetail ==
+                ORDER_DETAIL_STATUS.RETURN_PENDING
+                ? orderDetail.quantityOrigin
+                : orderDetail.quantity) | number
           }}đ</b
         >
       </h6>
