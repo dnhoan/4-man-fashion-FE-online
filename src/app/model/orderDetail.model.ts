@@ -5,6 +5,7 @@ export interface OrderDetail {
   id?: number;
   price: number;
   quantity: number;
+  quantityOrigin: number;
   productDetail: ProductDetailDTO;
   exchangeId?: number;
   statusExchange?: number;

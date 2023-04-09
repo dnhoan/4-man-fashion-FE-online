@@ -48,17 +48,80 @@
                   "
                   [alt]="orderDetail.productDetail!.productDetailName"
                   class="product-image"
-                  width="50px"
+                  width="50"
                 />
                 <div class="product-list-detail ms-2">
                   <h6 class="mb-2">
                     {{ orderDetail.productDetail!.productDetailName }}
                   </h6>
+
                   <i class="pi pi-tag product-category-icon"></i>
                   <span class="product-category"
                     >{{ orderDetail.quantity }} x
                     {{ orderDetail.price | number }}đ</span
                   >
+                  <ng-container
+                    *ngIf="
+                      order.orderStatus == ORDER_STATUS.EXCHANGE &&
+                      orderDetail.statusOrderDetail ==
+                        ORDER_DETAIL_STATUS.ACTIVE &&
+                      orderDetail.quantity > 0
+                    "
+                  >
+                    <div class="mt-3 d-flex">
+                      <button
+                        class="d-flex align-items-center me-2"
+                        style="margin-right: 10px"
+                        nz-button
+                        nzType="primary"
+                        nzSize="small"
+                        (click)="
+                          showModalFormInputExchange(
+                            orderDetail,
+                            false,
+                            order.id!
+                          )
+                        "
+                      >
+                        <span nz-icon nzType="redo" nzTheme="outline"></span
+                        >Hoàn trả
+                      </button>
+                      <button
+                        class="d-flex align-items-center me-2"
+                        nz-button
+                        nzType="primary"
+                        nzSize="small"
+                        (click)="
+                          showModalFormInputExchange(
+                            orderDetail,
+                            true,
+                            order.id!
+                          )
+                        "
+                      >
+                        <span nz-icon nzType="swap" nzTheme="outline"></span>Đổi
+                        trả
+                      </button>
+                    </div>
+                  </ng-container>
+                  <ng-container
+                    *ngFor="let status of commonService.orderDetailStatuses"
+                    ><button
+                      *ngIf="orderDetail.statusOrderDetail == status.status"
+                      [style]="{
+                        'background-color': status.color,
+                        border: 'none'
+                      }"
+                      class="d-flex align-items-center"
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      (click)="showDetailExchange(orderDetail)"
+                    >
+                      {{ status.title }}
+                      <span nz-icon nzType="eye" nzTheme="outline"></span>
+                    </button>
+                  </ng-container>
                 </div>
               </div>
               <div class="product-list-action">

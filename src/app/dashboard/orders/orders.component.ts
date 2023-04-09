@@ -18,6 +18,9 @@ import { ORDER_STATUS } from 'src/app/constants/constant.constant';
 import { customerStore } from '../customer.repository';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { ExchangeComponent } from './exchange/exchange.component';
+import { OrderDetail } from 'src/app/model/orderDetail.model';
+import { FormExchangeComponent } from './exchange/form-exchange/form-exchange.component';
+import { ORDER_DETAIL_STATUS } from 'src/app/constants/constant.constant';
 
 @Component({
   selector: 'app-orders',
@@ -27,6 +30,7 @@ import { ExchangeComponent } from './exchange/exchange.component';
 export class OrdersComponent implements OnInit {
   orderStatuses: OrderStatus[] = [];
   ORDER_STATUS = ORDER_STATUS;
+  ORDER_DETAIL_STATUS = ORDER_DETAIL_STATUS;
   orders: OrderDto[] = [];
   currentOrder!: OrderDto;
   tabIndexSelected = 0;
@@ -44,7 +48,7 @@ export class OrdersComponent implements OnInit {
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchOrder);
   isShowStatusHistory = false;
   constructor(
-    private commonService: CommonService,
+    public commonService: CommonService,
     private ordersService: OrdersService,
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,
@@ -68,11 +72,52 @@ export class OrdersComponent implements OnInit {
         this.isLoadingOrder = false;
       });
   }
+  showDetailExchange(orderDetail: OrderDetail) {
+    const modal = this.modal.create({
+      nzTitle: 'Lý do đổi trả',
+      nzContent: FormExchangeComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail,
+        isView: true,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+      }
+    });
+  }
   onChangeTab(e: any) {
     this.isLoadingOrder = true;
     this.orders = [];
     let status = this.orderStatuses[e.index].status;
     this.searchChange$.next({ ...this.searchOrder, status });
+  }
+  showModalFormInputExchange(
+    orderDetail: OrderDetail,
+    isExchange: boolean,
+    orderId: number
+  ) {
+    const modal = this.modal.create({
+      nzTitle: 'Thông tin đổi trả',
+      nzContent: FormExchangeComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzWidth: '50%',
+      nzComponentParams: {
+        orderDetail,
+        isExchange,
+        orderId,
+        orderStatus: ORDER_STATUS.CANCEL_ORDER,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.tabIndexSelected = 5;
+      }
+    });
   }
   receivedOrder(orderId: number, i_order: number) {}
   exchangeOrder(order: OrderDto, i_order: number) {
