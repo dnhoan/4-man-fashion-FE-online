@@ -19,10 +19,12 @@ import { ORDER_DETAIL_STATUS } from 'src/app/constants/constant.constant';
 export class FormExchangeComponent implements OnInit {
   @Input() orderDetail!: OrderDetail;
   @Input() isExchange!: boolean;
+  @Input() isView!: boolean;
   @Input() orderId!: number;
   @Input() orderStatus!: number;
   formExchange!: FormGroup;
   images: string[] = [];
+  ORDER_DETAIL_STATUS = ORDER_DETAIL_STATUS;
   constructor(
     private fb: FormBuilder,
     private storage: AngularFireStorage,
@@ -32,10 +34,24 @@ export class FormExchangeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formExchange = this.fb.group({
-      quantity: [1],
-      reason: ['', Validators.compose([EmptyValidator()])],
-    });
+    if (this.isView) {
+      this.images = this.orderDetail.exchange?.exchangeImages.map(
+        (i) => i.image
+      ) as string[];
+      this.formExchange = this.fb.group({
+        quantity: [this.orderDetail.quantity],
+        reason: [
+          this.orderDetail.exchange?.reason,
+          Validators.compose([EmptyValidator()]),
+        ],
+        note: [this.orderDetail.exchange?.note],
+      });
+    } else {
+      this.formExchange = this.fb.group({
+        quantity: [1],
+        reason: ['', Validators.compose([EmptyValidator()])],
+      });
+    }
   }
   onSubmit() {
     if (this.formExchange.valid && this.images.length) {
@@ -46,23 +62,66 @@ export class FormExchangeComponent implements OnInit {
         exchangeImages: this.images.map(
           (image: any) => ({ id: 0, image } as ExchangeImage)
         ),
+        orderDetailIdOrigin: this.orderDetail.id!,
       };
       this.orderDetail.exchange = data;
-      this.orderDetail.quantity = valueForm.quantity * -1;
-      this.orderDetail.statusOrderDetail = ORDER_DETAIL_STATUS.RETURN_PENDING;
+      if (this.isExchange) {
+        this.orderDetail.quantity = valueForm.quantity;
+        this.orderDetail.quantityOrigin = valueForm.quantity;
+        this.exchangeOrderDetail();
+      } else {
+        this.orderDetail.quantity = valueForm.quantity * -1;
+        this.orderDetail.quantityOrigin = valueForm.quantity * -1;
+        this.returnOrderDetail();
+      }
+    }
+  }
+  exchangeOrderDetail() {
+    this.orderDetail.statusOrderDetail = ORDER_DETAIL_STATUS.EXCHANGE_PENDING;
+    this.exchangeService
+      .exchangeOrderDetail({
+        orderDetails: this.orderDetail,
+        orderId: this.orderId,
+        statusOrder: this.orderStatus,
+        currentOrderDetailId: this.orderDetail.id!,
+      })
+      .subscribe((res) => {
+        if (res) {
+          this.commonService.success('Yêu cầu trả hàng thành công');
+          this.modalRef.destroy(true);
+        }
+      });
+  }
+  returnOrderDetail() {
+    this.orderDetail.statusOrderDetail = ORDER_DETAIL_STATUS.RETURN_PENDING;
+    this.exchangeService
+      .returnOrderDetail({
+        orderDetails: this.orderDetail,
+        orderId: this.orderId,
+        statusOrder: this.orderStatus,
+        currentOrderDetailId: this.orderDetail.id!,
+      })
+      .subscribe((res) => {
+        if (res) {
+          this.commonService.success('Yêu cầu trả hàng thành công');
+          this.modalRef.destroy(true);
+        }
+      });
+  }
+  reject() {
+    if (
+      this.orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
+    ) {
       this.exchangeService
-        .returnOrderDetail({
-          orderDetails: this.orderDetail,
-          orderId: this.orderId,
-          statusOrder: this.orderStatus,
-        })
+        .rejectReturnOrderDetail(this.orderDetail)
         .subscribe((res) => {
           console.log(res);
-
-          if (res) {
-            this.commonService.success('Yêu cầu trả hàng thành công');
-            this.modalRef.destroy(true);
-          }
+        });
+    } else {
+      this.exchangeService
+        .rejectExchangeOrderDetail(this.orderDetail)
+        .subscribe((res) => {
+          console.log(res);
         });
     }
   }
