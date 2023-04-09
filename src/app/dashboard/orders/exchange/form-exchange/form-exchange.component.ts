@@ -66,11 +66,11 @@ export class FormExchangeComponent implements OnInit {
       };
       this.orderDetail.exchange = data;
       if (this.isExchange) {
-        this.orderDetail.quantity = valueForm.quantity;
+        this.orderDetail.quantity = 0;
         this.orderDetail.quantityOrigin = valueForm.quantity;
         this.exchangeOrderDetail();
       } else {
-        this.orderDetail.quantity = valueForm.quantity * -1;
+        this.orderDetail.quantity = 0;
         this.orderDetail.quantityOrigin = valueForm.quantity * -1;
         this.returnOrderDetail();
       }
