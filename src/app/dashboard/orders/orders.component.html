@@ -1,53 +1,339 @@
-<section class="user-dashboard page-wrapper">
-  <div class="container">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">Order</th>
-          <th scope="col">Date</th>
-          <th scope="col">Status</th>
-          <th scope="col">Total</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">#1012</th>
-          <td>June 11, 2019</td>
-          <td>Completed</td>
-          <td>30</td>
-          <td>
-            <a routerLink="/order" class="btn btn-dark btn-small">View</a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">#2214</th>
-          <td>March 10, 2019</td>
-          <td>Completed</td>
-          <td>50</td>
-          <td>
-            <a routerLink="/order" class="btn btn-dark btn-small">View</a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">#3434</th>
-          <td>February 11, 2019</td>
-          <td>Pending</td>
-          <td>25</td>
-          <td>
-            <a routerLink="/order" class="btn btn-dark btn-small">View</a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">#5312</th>
-          <td>July 11, 2019</td>
-          <td>Processsing</td>
-          <td>56</td>
-          <td>
-            <a routerLink="/order" class="btn btn-dark btn-small">View</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<nz-tabset
+  (nzSelectChange)="onChangeTab($event)"
+  [(nzSelectedIndex)]="tabIndexSelected"
+>
+  <nz-tab *ngFor="let item of orderStatuses" [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+      <div class="d-flex align-items-baseline">
+        <span nz-icon nzTheme="outline"></span>
+        <p>{{ item.statusName }}</p>
+      </div>
+    </ng-template>
+    <ng-container *ngIf="isLoadingOrder">
+      <nz-spin
+        class="d-flex justify-content-center"
+        nzSimple
+        [nzSize]="'large'"
+      ></nz-spin>
+    </ng-container>
+    <div *ngIf="orders && orders.length; else noOrder">
+      <ng-container *ngFor="let order of orders; let i_order = index">
+        <div
+          style="background-color: #f9f9f9; padding: 10px; margin-bottom: 20px"
+        >
+          <div class="d-flex justify-content-between mb-3">
+            <p class="mb-0">
+              Mã đơn hàng: <b>{{ order.orderId }}</b>
+            </p>
+            <div class="d-flex">
+              <p style="margin-bottom: 0px; margin-right: 10px">
+                {{ order.ctime | date : "hh:mm dd/MM/yyyy" }}
+              </p>
+              <ng-container *ngFor="let status of orderStatuses">
+                <nz-tag
+                  style="margin-right: 0px"
+                  *ngIf="status.status == order.orderStatus"
+                  [nzColor]="status.color"
+                  >{{ status.statusName }}</nz-tag
+                >
+              </ng-container>
+            </div>
+          </div>
+          <ng-container *ngFor="let orderDetail of order.orderDetails">
+            <div class="product-item d-flex justify-content-between mb-3">
+              <div class="image-container d-flex">
+                <img
+                  [src]="
+                    'https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0'
+                  "
+                  [alt]="orderDetail.productDetail!.productDetailName"
+                  class="product-image"
+                  width="50"
+                />
+                <div class="product-list-detail ms-2">
+                  <h6 class="mb-2">
+                    {{ orderDetail.productDetail!.productDetailName }}
+                  </h6>
+
+                  <i class="pi pi-tag product-category-icon"></i>
+                  <span class="product-category"
+                    >{{
+                      orderDetail.statusOrderDetail ==
+                        ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                      orderDetail.statusOrderDetail ==
+                        ORDER_DETAIL_STATUS.RETURN_PENDING
+                        ? orderDetail.quantityOrigin
+                        : orderDetail.quantity
+                    }}
+                    x {{ orderDetail.price | number }}đ</span
+                  >
+                  <ng-container
+                    *ngIf="
+                      order.orderStatus == ORDER_STATUS.EXCHANGE &&
+                      orderDetail.statusOrderDetail ==
+                        ORDER_DETAIL_STATUS.ACTIVE &&
+                      orderDetail.quantity > 0
+                    "
+                  >
+                    <div class="mt-3 d-flex">
+                      <button
+                        class="d-flex align-items-center me-2"
+                        style="margin-right: 10px"
+                        nz-button
+                        nzType="primary"
+                        nzSize="small"
+                        (click)="
+                          showModalFormInputExchange(
+                            orderDetail,
+                            false,
+                            order.id!
+                          )
+                        "
+                      >
+                        <span nz-icon nzType="redo" nzTheme="outline"></span
+                        >Hoàn trả
+                      </button>
+                      <button
+                        class="d-flex align-items-center me-2"
+                        nz-button
+                        nzType="primary"
+                        nzSize="small"
+                        (click)="
+                          showModalFormInputExchange(
+                            orderDetail,
+                            true,
+                            order.id!
+                          )
+                        "
+                      >
+                        <span nz-icon nzType="swap" nzTheme="outline"></span>Đổi
+                        trả
+                      </button>
+                    </div>
+                  </ng-container>
+                  <ng-container
+                    *ngFor="let status of commonService.orderDetailStatuses"
+                    ><button
+                      *ngIf="orderDetail.statusOrderDetail == status.status"
+                      [style]="{
+                        'background-color': status.color,
+                        border: 'none'
+                      }"
+                      class="d-flex align-items-center"
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      (click)="showDetailExchange(orderDetail)"
+                    >
+                      {{ status.title }}
+                      <span nz-icon nzType="eye" nzTheme="outline"></span>
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="product-list-action">
+                <h6 class="mb-2">
+                  <b
+                    >{{
+                      orderDetail.productDetail!.price *
+                        (orderDetail.statusOrderDetail ==
+                          ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                        orderDetail.statusOrderDetail ==
+                          ORDER_DETAIL_STATUS.RETURN_PENDING
+                          ? orderDetail.quantityOrigin
+                          : orderDetail.quantity) | number
+                    }}đ</b
+                  >
+                </h6>
+              </div>
+            </div>
+            <nz-divider></nz-divider>
+          </ng-container>
+          <div class="d-flex justify-content-end mt-4 mb-2">
+            <h5 class="color-danger">
+              <b>Tổng tiền: {{ order.totalMoney | number }} đ</b>
+            </h5>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button
+              *ngIf="order.orderStatus == ORDER_STATUS.COMPLETE"
+              type="button"
+              class="btn btn-main btn-small"
+              (click)="exchangeOrder(order, i_order)"
+            >
+              Yêu cầu đổi trả
+            </button>
+            <button
+              *ngIf="order.orderStatus == ORDER_STATUS.DELIVERING"
+              type="button"
+              class="btn btn-main btn-small"
+              (click)="receivedOrder(order.id!, i_order)"
+            >
+              Đã nhận được hàng
+            </button>
+            <a
+              *ngIf="
+                order.orderStatus == ORDER_STATUS.PENDING ||
+                order.orderStatus == ORDER_STATUS.CONFIRMED ||
+                order.orderStatus == ORDER_STATUS.PACKAGING
+              "
+              (click)="showConfirmCancelOrder(i_order)"
+              class="btn btn-main btn-small"
+            >
+              Hủy đơn hàng
+            </a>
+            <a
+              style="margin-left: 20px"
+              (click)="showOrderDetail(order)"
+              class="btn btn-add-to-cart btn-small"
+            >
+              Xem chi tiết
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </nz-tab>
+</nz-tabset>
+<nz-modal
+  [(nzVisible)]="isShowConfirmCancelOrder"
+  nzTitle="Hủy đơn hàng"
+  (nzOnCancel)="closeConfirmCancelOrder()"
+  (nzOnOk)="cancelOrder()"
+>
+  <ng-container *nzModalContent>
+    <h5>Lý do hủy đơn hàng</h5>
+    <textarea
+      class="form-control"
+      [(ngModel)]="cancelNote"
+      cols="30"
+      rows="3"
+    ></textarea>
+  </ng-container>
+</nz-modal>
+<nz-modal
+  [(nzVisible)]="productDialog"
+  nzTitle="Chi tiết đơn hàng"
+  nzWidth="50%"
+  [nzFooter]="null"
+  (nzOnCancel)="closeOrderDetail()"
+>
+  <ng-container *nzModalContent>
+    <div class="rounded-3 mb-3">
+      <div class="d-flex">
+        <div class="border-end m-3 pe-3">
+          <p><b>Mã đơn hàng</b></p>
+          <p>HD{{ currentOrder.id }}</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Ngày tạo</b></p>
+          <p>
+            {{ currentOrder.ctime | date : "dd/MM/yyyy HH:mm" }}
+          </p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Tổng tiền hàng</b></p>
+          <p>{{ currentOrder.goodsValue | number }}đ</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Phí vận chuyển</b></p>
+          <p>{{ currentOrder.shipFee | number }}đ</p>
+        </div>
+        <div class="border-end m-3 pe-3">
+          <p><b>Tổng tiền</b></p>
+          <p>{{ currentOrder.totalMoney | number }}đ</p>
+        </div>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="rounded-3 p-3 mb-3">
+      <h6><b>Thông tin người nhận</b></h6>
+      <div class="">
+        <p><b>Tên người nhận: </b>{{ currentOrder.recipientName }}</p>
+        <p><b>Địa chỉ người nhận: </b>{{ currentOrder.address }}</p>
+        <p><b>SĐT người nhận: </b>{{ currentOrder.recipientPhone }}</p>
+        <p><b>Email người nhận: </b>{{ currentOrder.recipientEmail }}</p>
+        <p><b>Ghi chú: </b>{{ currentOrder.note }}</p>
+        <p *ngIf="currentOrder.orderStatus == ORDER_STATUS.CANCEL_ORDER">
+          <b>Lý do hủy: </b>{{ currentOrder.cancelNote }}
+        </p>
+      </div>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="rounded-3 p-3">
+      <h6><b>Thông tin đơn hàng</b></h6>
+      <div class="">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Ảnh</th>
+              <th scope="col">Sảm phẩm</th>
+              <th scope="col">SL</th>
+              <th scope="col">Đơn giá</th>
+              <th scope="col">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orderDetail of currentOrder.orderDetails">
+              <td>
+                <img
+                  [src]="'orderDetail.productDetail.image'"
+                  alt=""
+                  width="50"
+                />
+              </td>
+              <td>{{ orderDetail.productDetail.productDetailName }}</td>
+              <td>
+                {{
+                  orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                  orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.RETURN_PENDING
+                    ? orderDetail.quantityOrigin
+                    : orderDetail.quantity
+                }}
+              </td>
+              <td>{{ orderDetail.productDetail.price | number }} đ</td>
+              <td>
+                {{
+                  (orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.EXCHANGE_PENDING ||
+                  orderDetail.statusOrderDetail ==
+                    ORDER_DETAIL_STATUS.RETURN_PENDING
+                    ? orderDetail.quantityOrigin!
+                    : orderDetail.quantity!) * orderDetail.productDetail.price
+                    | number
+                }}đ
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <nz-collapse [nzBordered]="false">
+      <nz-collapse-panel
+        [nzHeader]="headerCollapse"
+        [(nzActive)]="isShowStatusHistory"
+      >
+        <nz-timeline *ngFor="let log of currentOrder.logsOrderStatus">
+          <nz-timeline-item>
+            <span>
+              <b>{{ log.newStatus | orderStatus }}</b>
+              <p>{{ log.user_change }}</p>
+            </span>
+            <p>{{ log.times | date : "HH:mm dd/MM/yyyy" }}</p></nz-timeline-item
+          >
+        </nz-timeline>
+      </nz-collapse-panel>
+    </nz-collapse>
+    <ng-template #headerCollapse
+      ><b>Lịch sử trạng thái đơn hàng</b></ng-template
+    >
+  </ng-container>
+</nz-modal>
+<ng-template #noOrder>
+  <div *ngIf="!isLoadingOrder" class="empty-content text-center">
+    <img src="https://5sfashion.vn/images/empty-product.png" alt="" />
+    <p>Không có đơn hàng nào</p>
   </div>
-</section>
+</ng-template>

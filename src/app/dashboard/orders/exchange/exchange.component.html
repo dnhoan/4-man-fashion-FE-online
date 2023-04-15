@@ -1,0 +1,44 @@
+<nz-table [nzNoResult]="noResult">
+  <thead>
+    <tr>
+      <th>Ảnh</th>
+      <th>Tên SP</th>
+      <th>SL</th>
+      <th>Đơn giá</th>
+      <th>Thành tiền</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let orderDetail of order.orderDetails">
+      <td>ảnh</td>
+      <td>
+        <b>{{ orderDetail.productDetail.productDetailName }}</b> <br />
+        <div class="mt-3 d-flex">
+          <button
+            class="d-flex align-items-center me-2"
+            style="margin-right: 10px"
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="showModalFormInputExchange(orderDetail, false)"
+          >
+            <span nz-icon nzType="redo" nzTheme="outline"></span>Hoàn trả
+          </button>
+          <button
+            class="d-flex align-items-center me-2"
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="showModalFormInputExchange(orderDetail, true)"
+          >
+            <span nz-icon nzType="swap" nzTheme="outline"></span>Đổi trả
+          </button>
+        </div>
+      </td>
+      <td>{{ orderDetail.quantity }}</td>
+      <td>{{ orderDetail.price | number }}đ</td>
+      <td>{{ orderDetail.price * orderDetail.quantity | number }}đ</td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #noResult> </ng-template>

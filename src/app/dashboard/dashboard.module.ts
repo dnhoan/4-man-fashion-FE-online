@@ -19,6 +19,10 @@ import { FavoriteProductComponent } from './favorite-product/favorite-product.co
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module';
+import { OrderStatusPipe } from '../pipes/order-status.pipe';
+import { ExchangeComponent } from './orders/exchange/exchange.component';
+import { FormExchangeComponent } from './orders/exchange/form-exchange/form-exchange.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +33,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     OrdersComponent,
     ChangePasswordComponent,
     FavoriteProductComponent,
+    OrderStatusPipe,
+    ExchangeComponent,
+    FormExchangeComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +49,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     NzInputNumberModule,
     NzButtonModule,
     NzListModule,
+    DashboardRoutingModule,
+    ReactiveFormsModule,
+    NgZorroAntdModule,
   ],
   providers: [
     {
