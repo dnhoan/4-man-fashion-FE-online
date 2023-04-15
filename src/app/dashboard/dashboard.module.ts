@@ -15,6 +15,10 @@ import { ProfileDetailsComponent } from './profile-details/profile-details.compo
 import { OrdersComponent } from './orders/orders.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditAddressComponent } from './edit-address/edit-address.component';
+import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 import { NgZorroAntdModule } from 'src/share_modules/ng-add-ng-zorro-antd.module';
 import { OrderStatusPipe } from '../pipes/order-status.pipe';
 import { ExchangeComponent } from './orders/exchange/exchange.component';
@@ -27,6 +31,8 @@ import { FormExchangeComponent } from './orders/exchange/form-exchange/form-exch
     AddressComponent,
     EditAddressComponent,
     OrdersComponent,
+    ChangePasswordComponent,
+    FavoriteProductComponent,
     OrderStatusPipe,
     ExchangeComponent,
     FormExchangeComponent,
@@ -34,6 +40,15 @@ import { FormExchangeComponent } from './orders/exchange/form-exchange/form-exch
   imports: [
     CommonModule,
     FormsModule,
+    NzRadioModule,
+    DashboardRoutingModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzModalModule,
+    NzInputModule,
+    NzInputNumberModule,
+    NzButtonModule,
+    NzListModule,
     DashboardRoutingModule,
     ReactiveFormsModule,
     NgZorroAntdModule,

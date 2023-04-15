@@ -17,6 +17,7 @@ import { District, Province, Ward } from 'src/app/model/province.model';
 import { EmptyValidator } from 'src/validators/emailOrPhone.validator';
 import { customerStore } from '../customer.repository';
 import { EditAddressComponent } from '../edit-address/edit-address.component';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-address',
@@ -49,7 +50,8 @@ export class AddressComponent implements OnInit {
     private addressService: AddressesService,
     private commonService: CommonService,
     private modal: NzModalRef,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private message: NzMessageService
   ) {}
   ngOnInit(): void {
     this.loadingProvince = true;
@@ -71,28 +73,6 @@ export class AddressComponent implements OnInit {
     });
   }
 
-  // editAddress(index: number) {
-  //   let addressEdited = this.addresss.forEach(val => addressEdited == val)
-  //   if (addressEdited) {
-  //     const modal = this.modalService.create({
-  //       nzTitle: 'Sửa địa chỉ',
-  //       nzContent: EditAddressComponent,
-  //       nzViewContainerRef: this.viewContainerRef,
-  //       nzComponentParams: {
-  //         addressEdited,
-  //       },
-  //       nzFooter: null,
-  //     });
-  //     modal.afterClose.subscribe((result) => {
-  //       if (result) {
-  //         let i = this.addresss.findIndex((a) => a.id == addressEdited.id);
-  //         this.commonService.success('Cập nhật địa chỉ thành công');
-  //         this.addresss[i] = result;
-  //       }
-  //     });
-  //   } else this.commonService.info('Vui lòng chọn địa chỉ');
-  // }
-
   onSubmit() {
     if (this.formAddress.valid) {
       let value = this.formAddress.value;
@@ -109,9 +89,13 @@ export class AddressComponent implements OnInit {
       };
 
       if (this.currentAddress) {
-        console.log(data.id);
-
         this.addressService.updateCustomerAddress(data).subscribe((res) => {
+          this.addressService
+            .getAddressByCustomerId(this.currentCustomer.id)
+            .subscribe((res) => {
+              this.addresss = res;
+            });
+          this.message.success('Cập nhật địa chỉ người dùng thành công!');
           this.isVisibleModal = false;
         });
       } else {
@@ -175,8 +159,6 @@ export class AddressComponent implements OnInit {
   }
   showModal(idAddress: number): void {
     this.currentAddress = idAddress;
-    console.log(this.currentAddress);
-
     this.isVisibleModal = true;
   }
 

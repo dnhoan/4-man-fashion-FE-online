@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { select } from '@ngneat/elf';
 import { Subscription } from 'rxjs';
 import { CustomerDto } from 'src/app/model/CustomerDto.model';
-import { JwtService } from '../../common-services/jwt.service';
 import { customerStore } from '../customer.repository';
 import { CustomerOnlineService } from './customer.service';
 
@@ -52,7 +50,7 @@ export class ProfileDetailsComponent implements OnInit {
       ],
       avatar: [''],
       birthday: ['', [Validators.required]],
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       gender: [''],
       note: [''],
       address: [''],
@@ -92,10 +90,10 @@ export class ProfileDetailsComponent implements OnInit {
     this.submit = true;
     if (this.formProfile.valid) {
       this.addValueCustomer();
-      this.customerService.updateCustomer(this.customer).subscribe(res => {
-      if(res) {
-        this.customer = customerStore.getValue().customer as CustomerDto
-      }
+      this.customerService.updateCustomer(this.customer).subscribe((res) => {
+        if (res) {
+          this.customer = customerStore.getValue().customer as CustomerDto;
+        }
       });
     }
   }

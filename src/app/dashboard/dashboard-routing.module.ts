@@ -6,6 +6,8 @@ import { EditAddressComponent } from './edit-address/edit-address.component';
 import { DashboardComponent } from './dashboard.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
+import { FavoriteProductComponent } from './favorite-product/favorite-product.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 const routes: Routes = [
   {
@@ -15,6 +17,8 @@ const routes: Routes = [
       { path: 'profile', component: ProfileDetailsComponent },
       { path: 'order', component: OrdersComponent },
       { path: 'cart', component: CartComponent },
+      { path: 'favorite-product', component: FavoriteProductComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: 'address', component: AddressComponent },
       { path: '', pathMatch: 'full', redirectTo: 'profile' },
     ],

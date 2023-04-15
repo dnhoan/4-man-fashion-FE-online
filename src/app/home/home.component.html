@@ -140,14 +140,17 @@
             <span class="onsale">Sale</span>
             <div class="product-hover-overlay">
               <a href="#"><i class="tf-ion-android-cart"></i></a>
-              <a href="#"><i class="tf-ion-ios-heart"></i></a>
+              <a
+                ><i
+                  class="tf-ion-ios-heart"
+                  (click)="addFavoriteProduct(product)"
+                ></i
+              ></a>
             </div>
 
             <div class="product-info">
               <h2 class="product-title h5 mb-0">
-                <a routerLink="/product-single">{{
-                  product.productName
-                }}</a>
+                <a routerLink="/product-single">{{ product.productName }}</a>
               </h2>
               <span class="price">
                 {{ product.productDetails[0].price | number }}đ
