@@ -102,6 +102,7 @@ export class ProductDetailComponent implements OnInit {
     }
   }
   addToFavorite() {}
+
   selectProductDetail() {
     if (this.isProductDetailSelected()) {
       let productDetail = this.product.productDetails.filter((proDetail) => {

@@ -34,8 +34,6 @@ export class HeaderComponent implements OnInit {
     this.subCustomerInfo = customerStore
       .pipe(select((state) => state.customer))
       .subscribe((cus) => {
-        console.log(cus);
-
         if (cus) {
           this.menuItemAccount = [
             { routerLink: 'dashboard', label: 'Thông tin cá nhân' },
