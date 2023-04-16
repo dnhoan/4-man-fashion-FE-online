@@ -168,7 +168,7 @@
                       </ng-container>
                       <button
                         nz-button
-                        (click)="addAddress()"
+                        (click)="addAddress(); $event.preventDefault()"
                         nzSize="large"
                         class="mt-2"
                       >
@@ -195,6 +195,10 @@
 
             <!-- Order sidebar Summery -->
             <div class="col-md-6 col-lg-4">
+              <app-voucher-order
+                (onSelectVoucher)="onSelectVoucher($event)"
+                [goodValue]="totalMoneyCart"
+              ></app-voucher-order>
               <div class="product-checkout-details mt-5 mt-lg-0">
                 <h4 class="mb-4 border-bottom pb-4">Sản phẩm</h4>
                 <div class="media" *ngFor="let item of cartItems">
@@ -227,10 +231,14 @@
                     <span class="h6">Phí ship</span>
                     <span class="total-price h6">{{ shipFee | number }} đ</span>
                   </div>
+                  <div class="d-flex justify-content-between" *ngIf="voucher">
+                    <span class="h6">Giảm giá</span>
+                    <span class="total-price h6">-{{ sale | number }} đ</span>
+                  </div>
                   <div class="d-flex justify-content-between">
                     <span class="h6">Tổng tiền</span>
                     <span class="total-price h6"
-                      >{{ totalMoneyCart + shipFee | number }} đ</span
+                      >{{ totalMoneyCart + shipFee - sale | number }} đ</span
                     >
                   </div>
 
@@ -282,6 +290,10 @@
           <p><b>Phí vận chuyển</b></p>
           <p>{{ order.shipFee | number }}đ</p>
         </div>
+        <div *ngIf="order.voucher" class="border-end m-3 pe-3">
+          <p><b>Giảm giá</b></p>
+          <p>-{{ order.sale | number }}đ</p>
+        </div>
         <div class="border-end m-3 pe-3">
           <p><b>Tổng tiền</b></p>
           <p>{{ order.totalMoney | number }}đ</p>
@@ -323,7 +335,9 @@
               <td>{{ orderDetail.productDetail!.productDetailName }}</td>
               <td>{{ orderDetail.quantity }}</td>
               <td>{{ orderDetail.price | number }} đ</td>
-              <td>{{ orderDetail.quantity! * orderDetail.price! | number }}đ</td>
+              <td>
+                {{ orderDetail.quantity! * orderDetail.price! | number }}đ
+              </td>
             </tr>
           </tbody>
         </table>

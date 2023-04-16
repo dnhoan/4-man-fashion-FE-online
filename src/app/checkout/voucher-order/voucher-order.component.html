@@ -1,0 +1,103 @@
+<div class="product-checkout-details mb-3 mt-5 mt-lg-0">
+  <h4 class="mb-4 border-bottom pb-4">Khuyến mãi</h4>
+
+  <ng-container *ngIf="!voucher; else showVoucher">
+    <div class="d-flex justify-content-between mb-2">
+      <input
+        nz-input
+        [(ngModel)]="voucherCode"
+        nzSize="large"
+        placeholder="Nhập mã giảm giá"
+      />
+      <button
+        type="button"
+        nz-button
+        (click)="applyVoucher(); $event.preventDefault()"
+        nzType="primary"
+        nzSize="large"
+      >
+        Áp dụng
+      </button>
+    </div>
+  </ng-container>
+
+  <button
+    nz-button
+    nzType="default"
+    nzSize="large"
+    (click)="showModal(); $event.preventDefault()"
+  >
+    {{ voucher ? "Thay đổi Voucher" : "Chọn voucher" }}
+  </button>
+  <ng-template #showVoucher>
+    <div *ngIf="voucher" class="d-flex align-items-center">
+      <img
+        src="../../../../assets/images/sale.png"
+        alt=""
+        width="60"
+        height="60"
+      />
+      <div style="margin-left: 20px">
+        <p class="mb-0">
+          <b
+            >{{ voucher.voucherName }} - {{ voucher.voucherCode }} - SL:
+            {{ voucher.quantity }}</b
+          >
+        </p>
+        <p class="mb-0 text-danger">
+          <b>
+            Giảm {{ voucher.discount | number
+            }}{{ voucher.voucherType == VOUCHER_TYPE.PERCENT ? "%" : "đ" }}
+          </b>
+        </p>
+        <p>Đơn tối thiểu: {{ voucher.minimumInvoiceValue | number }}</p>
+      </div>
+      <a nz-button nzType="link" class="text-danger" (click)="removeVoucher()"
+        >Xóa</a
+      >
+    </div>
+  </ng-template>
+</div>
+
+<nz-modal
+  [(nzVisible)]="isShowModalVoucher"
+  nzTitle="Voucher shop"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
+  <ng-container *nzModalContent>
+    <nz-radio-group [(ngModel)]="voucherForm">
+      <label
+        class="d-flex align-items-center"
+        nz-radio
+        [nzDisabled]="goodValue < item.minimumInvoiceValue!"
+        [nzValue]="item"
+        *ngFor="let item of vouchers"
+      >
+        <div class="d-flex align-items-center">
+          <img
+            src="../../../../assets/images/sale.png"
+            alt=""
+            width="60"
+            height="60"
+          />
+          <div style="margin-left: 20px">
+            <p class="mb-0">
+              <b
+                >{{ item.voucherName }} - {{ item.voucherCode }} - SL:
+                {{ item.quantity }}</b
+              >
+            </p>
+            <p class="mb-0 text-danger">
+              <b>
+                Giảm {{ item.discount | number
+                }}{{ item.voucherType == VOUCHER_TYPE.PERCENT ? "%" : "đ" }}
+              </b>
+            </p>
+            <p>Đơn tối thiểu: {{ item.minimumInvoiceValue | number }}</p>
+          </div>
+        </div>
+      </label>
+    </nz-radio-group>
+  </ng-container>
+</nz-modal>
