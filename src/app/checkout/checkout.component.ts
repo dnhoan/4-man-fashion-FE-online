@@ -18,7 +18,7 @@ import { cartItemsStore } from '../cart/cart.repository';
 import { CartService } from '../cart/cart.service';
 import { CommonService } from '../common-services/common.service';
 import { CommonConstants } from '../constants/common-constants';
-import { ORDER_STATUS } from '../constants/constant.constant';
+import { ORDER_STATUS, VOUCHER_TYPE } from '../constants/constant.constant';
 import { customerStore } from '../dashboard/customer.repository';
 import { OrdersService } from '../dashboard/orders/orders.service';
 import { Address } from '../model/address.model';
@@ -28,6 +28,7 @@ import { OrderDto } from '../model/orderDto.model';
 import { AddressesComponent } from './addresses/addresses.component';
 import { AddressesService } from './addresses/addresses.service';
 import { CheckoutService } from './checkout.service';
+import { Voucher } from './voucher-order/voucher.model';
 
 @Component({
   selector: 'app-checkout',
@@ -45,6 +46,7 @@ export class CheckoutComponent implements OnInit {
   subItemCart!: Subscription;
   isCreateOrderSuccess = false;
   order!: OrderDto;
+  voucher!: Voucher;
   constructor(
     private formBuilder: FormBuilder,
     private addressesService: AddressesService,
@@ -159,6 +161,7 @@ export class CheckoutComponent implements OnInit {
         }
       });
   }
+  updateVoucher() {}
   checkout() {
     if (this.formCheckout.valid && this.cartItems.length) {
       let value = this.formCheckout.value;
@@ -190,6 +193,7 @@ export class CheckoutComponent implements OnInit {
             newStatus: ORDER_STATUS.PENDING,
           },
         ],
+        voucher: this.voucher,
       };
       this.orderService.createOrder(data).subscribe((res) => {
         if (res) {
@@ -199,6 +203,19 @@ export class CheckoutComponent implements OnInit {
           this.isCreateOrderSuccess = true;
         }
       });
+    }
+  }
+  onSelectVoucher(e: any) {
+    console.log(e);
+
+    this.voucher = e;
+    if (e)
+      this.sale =
+        this.voucher!.voucherType == VOUCHER_TYPE.PERCENT
+          ? (this.totalMoneyCart * this.voucher!.discount!) / 100
+          : this.voucher!.discount!;
+    else {
+      this.sale = 0;
     }
   }
   returnHome() {}
