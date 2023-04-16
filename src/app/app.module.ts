@@ -39,6 +39,7 @@ import { NZ_CONFIG, NzConfig } from 'ng-zorro-antd/core/config';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
+import { VoucherOrderComponent } from './checkout/voucher-order/voucher-order.component';
 registerLocaleData(en);
 const ngZorroConfig: NzConfig = {
   theme: {
@@ -59,6 +60,7 @@ const ngZorroConfig: NzConfig = {
     SignupComponent,
     ForgotPasswordComponent,
     AddressesComponent,
+    VoucherOrderComponent,
   ],
   imports: [
     BrowserModule,

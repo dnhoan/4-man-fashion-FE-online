@@ -1,3 +1,4 @@
+import { Voucher } from '../checkout/voucher-order/voucher.model';
 import { CustomerDto } from './CustomerDto.model';
 import { LogOrderStatus } from './logOrderStatus.model';
 import { OrderDetail } from './orderDetail.model';
@@ -25,4 +26,5 @@ export interface OrderDto {
   mtime?: string;
   logsOrderStatus?: LogOrderStatus[];
   orderDetails?: OrderDetail[];
+  voucher?: Voucher;
 }

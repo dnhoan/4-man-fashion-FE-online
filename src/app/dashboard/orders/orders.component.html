@@ -240,6 +240,10 @@
           <p>{{ currentOrder.shipFee | number }}đ</p>
         </div>
         <div class="border-end m-3 pe-3">
+          <p><b>Giảm giá</b></p>
+          <p>-{{ currentOrder.sale | number }}đ</p>
+        </div>
+        <div class="border-end m-3 pe-3">
           <p><b>Tổng tiền</b></p>
           <p>{{ currentOrder.totalMoney | number }}đ</p>
         </div>
