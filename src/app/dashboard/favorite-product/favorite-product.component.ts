@@ -29,7 +29,16 @@ export class FavoriteProductComponent implements OnInit {
   subCustomer!: Subscription;
   products: ProductDTO[] = [];
   subUpdateOrderDetail!: Subscription;
-  updateOrderDetail$ = new BehaviorSubject<OrderDetail>({});
+  updateOrderDetail$ = new BehaviorSubject<OrderDetail>({
+    price: 0,
+    quantity: 0,
+    quantityOrigin: 0,
+    productDetail: {
+      stock: 0,
+      productDetailName: '',
+      price: 0
+    },
+  });
   searchFavoriteProduct: SearchOption = {
     searchTerm: '',
     status: 1,
