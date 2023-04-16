@@ -13,7 +13,6 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { ProductsComponent } from './products/products.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, registerLocaleData } from '@angular/common';
@@ -39,6 +38,8 @@ import { NZ_CONFIG, NzConfig } from 'ng-zorro-antd/core/config';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VoucherOrderComponent } from './checkout/voucher-order/voucher-order.component';
 registerLocaleData(en);
 const ngZorroConfig: NzConfig = {
@@ -57,6 +58,7 @@ const ngZorroConfig: NzConfig = {
     CheckoutComponent,
     ProductsComponent,
     LoginComponent,
+    ResetPasswordComponent,
     SignupComponent,
     ForgotPasswordComponent,
     AddressesComponent,

@@ -20,7 +20,7 @@ export class ProfileDetailsComponent implements OnInit {
     private fb: FormBuilder,
     readonly router: Router,
     private customerService: CustomerOnlineService
-  ) {}
+  ) { }
   ngOnDestroy() {
     this.subCustomer.unsubscribe();
   }
