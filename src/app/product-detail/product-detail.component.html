@@ -152,8 +152,8 @@
             <a
               style="width: 49%"
               class="btn btn-main btn-small"
-              (click)="addToFavorite()"
-              ><i class="tf-ion-ios-heart"></i>Thêm vào yêu thích</a
+              (click)="addFavoriteProduct()"
+              ><i class="tf-ion-ios-heart"></i> Thêm vào yêu thích</a
             >
           </div>
           <div class="products-meta mt-4">
@@ -211,57 +211,15 @@
             id="nav-home"
             role="tabpanel"
             aria-labelledby="nav-home-tab"
-          >
-            <p>
-              Pellentesque habitant morbi tristique senectus et netus et
-              malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat
-              vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit
-              amet quam egestas semper. Aenean ultricies mi vitae est. Mauris
-              placerat eleifend leo.
-            </p>
-
-            <h4>Product Features</h4>
-
-            <ul class="">
-              <li>
-                Mapped with 3M™ Thinsulate™ Insulation [40G Body / Sleeves /
-                Hood]
-              </li>
-              <li>Embossed Taffeta Lining</li>
-              <li>
-                DRYRIDE Durashell™ 2-Layer Oxford Fabric [10,000MM, 5,000G]
-              </li>
-            </ul>
-          </div>
+            [innerHTML]="product.detail"
+          ></div>
           <div
             class="tab-pane fade"
             id="nav-profile"
             role="tabpanel"
             aria-labelledby="nav-profile-tab"
-          >
-            <ul class="list-unstyled info-desc">
-              <li class="d-flex">
-                <strong>Weight </strong>
-                <span>400 g</span>
-              </li>
-              <li class="d-flex">
-                <strong>Dimensions </strong>
-                <span>10 x 10 x 15 cm</span>
-              </li>
-              <li class="d-flex">
-                <strong>Materials</strong>
-                <span>60% cotton, 40% polyester</span>
-              </li>
-              <li class="d-flex">
-                <strong>Color </strong>
-                <span>Blue, Gray, Green, Red, Yellow</span>
-              </li>
-              <li class="d-flex">
-                <strong>Size</strong>
-                <span>L, M, S, XL, XXL</span>
-              </li>
-            </ul>
-          </div>
+            [innerHTML]="product.description"
+          ></div>
           <div
             class="tab-pane fade"
             id="nav-contact"

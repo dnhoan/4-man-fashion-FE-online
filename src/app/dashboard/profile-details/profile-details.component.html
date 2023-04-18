@@ -1,106 +1,94 @@
-<section class="user-dashboard page-wrapper">
-  <div class="container">
-    <div class="row">
-      <div class="tab-pane fade show active" id="settings" role="tabpanel">
-        <div class="acccount-settings">
-          <h4 class="mb-4">Thông tin khách hàng</h4>
-          <form [formGroup]="formProfile">
-            <div class="form-row">
-              <div class="form-group col-12 mb-4">
-                <label>Tên khách hàng</label>
-                <input
-                  formControlName="customerName"
-                  type="text"
-                  class="form-control"
-                />
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProfile.get('customerName')?.errors?.['required'] && formProfile.get('customerName')?.touched || submit && formProfile.get('customerName')?.errors?.['required'] "
-                >
-                  Tên khách hàng không được để trống!
-                </small>
-              </div>
-              <div class="form-group col-12 mb-4">
-                <label>Số điện thoại</label>
-                <input
-                  formControlName="phoneNumber"
-                  type="text"
-                  class="form-control"
-                />
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProfile.get('phoneNumber')?.errors?.['required'] && formProfile.get('phoneNumber')?.touched || submit && formProfile.get('phoneNumber')?.errors?.['required'] "
-                >
-                  Số điện thoại không được để trống!
-                </small>
-                <small
-                  class="col alert text-danger col-12"
-                  role="alert"
-                  *ngIf="formProfile.get('phoneNumber')?.errors?.['pattern'] && formProfile.get('phoneNumber')?.touched || submit && formProfile.get('phoneNumber')?.errors?.['email'] "
-                >
-                  Số điện thoại không đúng định dạng!
-                </small>
-              </div>
-            </div>
-
-            <div class="form-group mb-4">
-              <label>Ngày sinh </label>
-              <input
-                formControlName="birthday"
-                type="date"
-                class="form-control"
-              />
-              <small
-                class="col alert text-danger col-12"
-                role="alert"
-                *ngIf="formProfile.get('birthday')?.errors?.['required'] && formProfile.get('birthday')?.touched || submit && formProfile.get('birthday')?.errors?.['required'] "
-              >
-                Ngày sinh không được để trống!
-              </small>
-            </div>
-            <div class="form-group mb-4">
-              <label>Email</label>
-              <input formControlName="email" type="text" class="form-control" />
-              <small
-                class="col alert text-danger col-12"
-                role="alert"
-                *ngIf="formProfile.get('email')?.errors?.['required'] && formProfile.get('email')?.touched || submit && formProfile.get('email')?.errors?.['required'] "
-              >
-                Email không được để trống!
-              </small>
-              <small
-                class="col alert text-danger col-12"
-                role="alert"
-                *ngIf="formProfile.get('email')?.errors?.['email'] && formProfile.get('email')?.touched || submit && formProfile.get('email')?.errors?.['email'] "
-              >
-                Email không đúng định dạng!
-              </small>
-            </div>
-            <div class="form-group mb-4">
-              <label>Giới tính</label>
-              <select formControlName="gender" id="gender" class="form-control">
-                <option [value]="1">Nam</option>
-                <option [value]="0">Nữ</option>
-              </select>
-            </div>
-            <div class="form-group mb-4">
-              <label>Địa chỉ</label>
-              <input
-                formControlName="address"
-                type="text"
-                class="form-control"
-              />
-            </div>
-            <div class="form-group mb-4">
-              <label>Ghi chú </label>
-              <input type="text" class="form-control" formControlName="note" />
-            </div>
-            <a (click)="update()" class="btn btn-primary">Cập nhật</a>
-          </form>
+<div class="tab-pane fade show active" id="settings" role="tabpanel">
+  <div class="acccount-settings">
+    <h4 class="mb-4 text-center">Thông tin khách hàng</h4>
+    <form [formGroup]="formProfile">
+      <div class="form-row">
+        <div class="form-group col-12 mb-4">
+          <label>Tên khách hàng</label>
+          <input
+            formControlName="customerName"
+            type="text"
+            class="form-control"
+          />
+          <small
+            class="col alert text-danger col-12"
+            role="alert"
+            *ngIf="formProfile.get('customerName')?.errors?.['required'] && formProfile.get('customerName')?.touched || submit && formProfile.get('customerName')?.errors?.['required'] "
+          >
+            Tên khách hàng không được để trống!
+          </small>
+        </div>
+        <div class="form-group col-12 mb-4">
+          <label>Số điện thoại</label>
+          <input
+            formControlName="phoneNumber"
+            type="text"
+            class="form-control"
+          />
+          <small
+            class="col alert text-danger col-12"
+            role="alert"
+            *ngIf="formProfile.get('phoneNumber')?.errors?.['required'] && formProfile.get('phoneNumber')?.touched || submit && formProfile.get('phoneNumber')?.errors?.['required'] "
+          >
+            Số điện thoại không được để trống!
+          </small>
+          <small
+            class="col alert text-danger col-12"
+            role="alert"
+            *ngIf="formProfile.get('phoneNumber')?.errors?.['pattern'] && formProfile.get('phoneNumber')?.touched || submit && formProfile.get('phoneNumber')?.errors?.['email'] "
+          >
+            Số điện thoại không đúng định dạng!
+          </small>
         </div>
       </div>
-    </div>
+
+      <div class="form-group mb-4">
+        <label>Ngày sinh </label>
+        <input formControlName="birthday" type="date" class="form-control" />
+        <small
+          class="col alert text-danger col-12"
+          role="alert"
+          *ngIf="formProfile.get('birthday')?.errors?.['required'] && formProfile.get('birthday')?.touched || submit && formProfile.get('birthday')?.errors?.['required'] "
+        >
+          Ngày sinh không được để trống!
+        </small>
+      </div>
+      <div class="form-group mb-4">
+        <label>Email</label>
+        <input formControlName="email" type="text" class="form-control" />
+        <small
+          class="col alert text-danger col-12"
+          role="alert"
+          *ngIf="formProfile.get('email')?.errors?.['required'] && formProfile.get('email')?.touched || submit && formProfile.get('email')?.errors?.['required'] "
+        >
+          Email không được để trống!
+        </small>
+        <small
+          class="col alert text-danger col-12"
+          role="alert"
+          *ngIf="formProfile.get('email')?.errors?.['email'] && formProfile.get('email')?.touched || submit && formProfile.get('email')?.errors?.['email'] "
+        >
+          Email không đúng định dạng!
+        </small>
+      </div>
+      <div class="form-group mb-4">
+        <label>Giới tính</label>
+        <select formControlName="gender" id="gender" class="form-control">
+          <option [value]="1">Nam</option>
+          <option [value]="0">Nữ</option>
+        </select>
+      </div>
+      <div class="form-group mb-4">
+        <label>Địa chỉ</label>
+        <input formControlName="address" type="text" class="form-control" />
+      </div>
+      <div class="form-group mb-4">
+        <label>Ghi chú </label>
+        <input type="text" class="form-control" formControlName="note" />
+      </div>
+      <a (click)="update()" class="btn btn-main btn-small float-right"
+        >Cập nhật</a
+      >
+    </form>
   </div>
-</section>
+</div>

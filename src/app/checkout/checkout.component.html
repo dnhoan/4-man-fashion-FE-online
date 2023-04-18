@@ -201,15 +201,15 @@
               ></app-voucher-order>
               <div class="product-checkout-details mt-5 mt-lg-0">
                 <h4 class="mb-4 border-bottom pb-4">Sản phẩm</h4>
-                <div class="media" *ngFor="let item of cartItems">
+                <div class="media mb-2" *ngFor="let item of cartItems">
                   <a routerLink="/product-single">
                     <img
                       style="width: 100px"
-                      src="https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0"
+                      [src]="item.productDetailDTO.image"
                       alt="image"
                     />
                   </a>
-                  <div class="media-body">
+                  <div style="padding-left: 10px" class="media-body">
                     <h6>
                       {{ item.productDetailDTO.productDetailName }}
                     </h6>
@@ -326,11 +326,11 @@
           <tbody>
             <tr *ngFor="let orderDetail of order.orderDetails">
               <td>
-                <!-- <img
-                [src]="orderDetail.pro.image"
-                alt=""
-                width="50"
-              /> -->
+                <img
+                  [src]="orderDetail.productDetail.image"
+                  alt=""
+                  width="50"
+                />
               </td>
               <td>{{ orderDetail.productDetail!.productDetailName }}</td>
               <td>{{ orderDetail.quantity }}</td>

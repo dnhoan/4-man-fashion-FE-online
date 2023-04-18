@@ -29,6 +29,7 @@ import { AddressesComponent } from './addresses/addresses.component';
 import { AddressesService } from './addresses/addresses.service';
 import { CheckoutService } from './checkout.service';
 import { Voucher } from './voucher-order/voucher.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
@@ -55,7 +56,8 @@ export class CheckoutComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private commonService: CommonService,
     private orderService: OrdersService,
-    private checkoutService: CheckoutService
+    private checkoutService: CheckoutService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -206,8 +208,6 @@ export class CheckoutComponent implements OnInit {
     }
   }
   onSelectVoucher(e: any) {
-    console.log(e);
-
     this.voucher = e;
     if (e)
       this.sale =
@@ -218,8 +218,12 @@ export class CheckoutComponent implements OnInit {
       this.sale = 0;
     }
   }
-  returnHome() {}
-  returnOrders() {}
+  returnHome() {
+    this.router.navigate(['/home']);
+  }
+  returnOrders() {
+    this.router.navigate(['/dashboard/order']);
+  }
   ngOnDestroy() {
     this.subItemCart.unsubscribe();
   }

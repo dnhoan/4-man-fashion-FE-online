@@ -139,9 +139,9 @@
 
             <span class="onsale">Sale</span>
             <div class="product-hover-overlay">
-              <a href="#"><i class="tf-ion-android-cart"></i></a>
               <a
                 ><i
+                  style="color: white"
                   class="tf-ion-ios-heart"
                   (click)="addFavoriteProduct(product)"
                 ></i
@@ -152,8 +152,8 @@
               <h2 class="product-title h5 mb-0">
                 <a routerLink="/product-single">{{ product.productName }}</a>
               </h2>
-              <span class="price">
-                {{ product.productDetails[0].price | number }}đ
+              <span class="price text-danger">
+                <b>{{ product.productDetails[0].price | number }}đ</b>
               </span>
             </div>
           </div>

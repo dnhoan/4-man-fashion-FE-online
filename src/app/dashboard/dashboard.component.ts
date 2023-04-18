@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { JwtService } from '../common-services/jwt.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,10 +22,23 @@ export class DashboardComponent implements OnInit {
       routerLink: 'address',
       title: 'Địa chỉ',
     },
+    {
+      routerLink: 'favorite-product',
+      title: 'Sản phẩm yêu thích',
+    },
+    {
+      routerLink: 'change-password',
+      title: 'Thay đổi mật khẩu',
+    },
   ];
-  constructor(private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService, private router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    let url = this.router.url;
+    this.activeNav = this.nav.filter((n) =>
+      n.routerLink.includes(url.split('/')[2])
+    )[0].routerLink;
+  }
   logout() {
     this.jwtService.removeJwtToken();
   }

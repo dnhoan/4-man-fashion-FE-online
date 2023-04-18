@@ -13,6 +13,8 @@ import { Size } from '../model/size.model';
 import { upsertEntitiesById } from '@ngneat/elf-entities';
 import { ProductDetailService } from './product-detail.service';
 import { CartItemDto } from '../model/cartItemDto.model';
+import { FavoriteProduct } from '../model/favoriteProduct.model';
+import { FavoriteProductService } from '../service/favorite.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -32,7 +34,8 @@ export class ProductDetailComponent implements OnInit {
     private router: Router,
     private productDetailService: ProductDetailService,
     private cartService: CartService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private favoriteProductsService: FavoriteProductService
   ) {}
 
   ngOnInit() {
@@ -101,8 +104,33 @@ export class ProductDetailComponent implements OnInit {
       }
     }
   }
-  addToFavorite() {}
-
+  addFavoriteProduct() {
+    let customer = customerStore.getValue().customer;
+    if (customer) {
+      let data: FavoriteProduct = {
+        id: 0,
+        customer: customer,
+        product: this.product,
+      };
+      this.commonService
+        .confirm('Bạn có muốn thêm sản phẩm này vào danh sách yêu thích?')
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.favoriteProductsService
+              .createFavoriteProduct(data)
+              .subscribe((res) => {
+                if (res) {
+                  this.commonService.success(
+                    'Thêm sản phẩm vào danh sách yêu thích thành công'
+                  );
+                }
+              });
+          }
+        });
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
   selectProductDetail() {
     if (this.isProductDetailSelected()) {
       let productDetail = this.product.productDetails.filter((proDetail) => {

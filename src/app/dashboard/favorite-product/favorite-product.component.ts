@@ -18,6 +18,12 @@ import { ProductsService } from 'src/app/products/products.service';
 import { OrderDetail } from 'src/app/model/orderDetail.model';
 import { OrdersService } from '../orders/orders.service';
 import { OrderDto } from 'src/app/model/orderDto.model';
+import { CommonService } from 'src/app/common-services/common.service';
+import { CartItemDto } from 'src/app/model/cartItemDto.model';
+import { ProductDetailDTO } from 'src/app/model/productDetail.model';
+import { CartService } from 'src/app/cart/cart.service';
+import { cartItemsStore } from 'src/app/cart/cart.repository';
+import { upsertEntitiesById } from '@ngneat/elf-entities';
 
 @Component({
   selector: 'app-favorite-product',
@@ -38,30 +44,18 @@ export class FavoriteProductComponent implements OnInit {
   };
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchFavoriteProduct);
   subSearchProduct!: Subscription;
-  favoriteProducts: FavoriteProduct[] = [];
   page!: Page;
   subProducts!: Subscription;
   order!: OrderDto;
   constructor(
     private favoriteProductService: FavoriteProductService,
     private productsService: ProductsService,
-    private orderService: OrdersService
+    private orderService: OrdersService,
+    private commonService: CommonService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
-    // this.productsService.getListproduct().subscribe((res: any) => {
-    //   if (res)
-    //     this.products = res.data.map((item: ProductDTO) => {
-    //       if (item.productDetails.length == 1) {
-    //         item.stock = item.productDetails[0].stock;
-    //         item.productDetailSelected = item.productDetails[0];
-    //       } else {
-    //         item.stock = item.productDetails.reduce((a, b) => a + b.stock, 0);
-    //       }
-    //       return item;
-    //     });
-    // });
-
     this.subCustomer = customerStore.subscribe((res: any) => {
       if (res.customer) {
         this.customer = res.customer as CustomerDto;
@@ -69,7 +63,30 @@ export class FavoriteProductComponent implements OnInit {
     });
     this.getListFavoriteProduct();
   }
-
+  addToCart(product: ProductDTO, index: number) {
+    // let productDetail = product.productDetailSelected;
+    if (product.stock == 0) {
+      this.commonService.info(
+        'Sản phẩm này tạm hết hàng, vui lòng lựa chọn sản phẩm khác'
+      );
+      return;
+    }
+    let customer = customerStore.getValue().customer;
+    let cart: CartItemDto = {
+      id: 0,
+      amount: product.amount!,
+      productDetailDTO: product.productDetailSelected as ProductDetailDTO,
+    };
+    this.cartService.addToCart(customer!.id, cart).subscribe((res) => {
+      cartItemsStore.update(
+        upsertEntitiesById(res.id, {
+          updater: { amount: res.amount },
+          creator: () => res,
+        })
+      );
+      this.commonService.success('Thêm vào giỏ hàng thành công');
+    });
+  }
   getListFavoriteProduct() {
     this.favoriteProductService
       .getFavoriteProductByCustomerId(
@@ -77,8 +94,16 @@ export class FavoriteProductComponent implements OnInit {
         this.searchFavoriteProduct
       )
       .subscribe((res) => {
-        this.favoriteProducts = res.items;
-        console.log(this.favoriteProducts);
+        if (res.items)
+          this.products = res.items.map((item: ProductDTO) => {
+            if (item.productDetails.length == 1) {
+              item.stock = item.productDetails[0].stock;
+              item.productDetailSelected = item.productDetails[0];
+            } else {
+              item.stock = item.productDetails.reduce((a, b) => a + b.stock, 0);
+            }
+            return item;
+          });
       });
   }
 

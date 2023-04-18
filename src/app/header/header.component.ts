@@ -38,6 +38,14 @@ export class HeaderComponent implements OnInit {
           this.menuItemAccount = [
             { routerLink: 'dashboard', label: 'Thông tin cá nhân' },
             { routerLink: 'dashboard/order', label: 'Đơn hàng' },
+            {
+              routerLink: 'dashboard/favorite-product',
+              label: 'Sản phẩm yêu thích',
+            },
+            {
+              routerLink: 'dashboard/change-password',
+              label: 'Thay đổi mật khẩu',
+            },
             { routerLink: 'dashboard/address', label: 'Địa chỉ' },
           ];
           this.cartService.getProductCartByCusId(cus.id).subscribe((res) => {
