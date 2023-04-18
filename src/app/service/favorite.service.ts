@@ -22,7 +22,7 @@ export class FavoriteProductService {
   getFavoriteProductByCustomerId(idCustomer: number, search: SearchOption) {
     return this.requestService
       .get(
-        `${this.apiFavoriteProduct}/favorite/getList?offset=${search.offset}&limit=${search.limit}&status=${search.status}&customerId=${idCustomer}`,
+        `${this.apiFavoriteProduct}/favorite/getList/${idCustomer}?offset=${search.offset}&limit=${search.limit}&status=${search.status}`,
         'lấy danh sách sản phẩm yêu thích'
       )
       .pipe(
@@ -52,15 +52,16 @@ export class FavoriteProductService {
       .pipe(
         map((res) => {
           if (res.code == '000') {
-            return res.data;
-          }
-          if (res.code == '409') {
-            return this.message.error(
+            return true;
+          } else if (res.code == '409') {
+            this.commonService.info(
               'Sản phẩm này đã có trong danh sách sản phẩm yêu thích của bạn!'
             );
+            return false;
+          } else {
+            this.commonService.error('Lỗi thêm sản phẩm yêu thích');
+            return false;
           }
-          this.commonService.error('Lỗi thêm sản phẩm yêu thích');
-          return false;
         })
       );
   }

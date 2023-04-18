@@ -10,6 +10,7 @@ export interface ProductDetail {
   stock: number;
   productDetailCode?: string;
   productDetailName: string;
+  image?: string;
   price: number;
   sizeName?: string;
   colorName?: string;
@@ -26,6 +27,7 @@ export interface ProductDetailDTO {
   stock: number;
   productDetailCode?: string;
   productDetailName: string;
+  image?: string;
   price: number;
   sizeName?: string;
   expand?: boolean;

@@ -43,14 +43,12 @@
             <div class="product-item d-flex justify-content-between mb-3">
               <div class="image-container d-flex">
                 <img
-                  [src]="
-                    'https://firebasestorage.googleapis.com/v0/b/fashion-d9d81.appspot.com/o/product_images%2F1677893040676?alt=media&token=245d060c-6d91-438b-b9ec-529ab5980aa0'
-                  "
-                  [alt]="orderDetail.productDetail!.productDetailName"
+                  [src]="orderDetail.productDetail!.image"
+                  [alt]="'Image'"
                   class="product-image"
                   width="50"
                 />
-                <div class="product-list-detail ms-2">
+                <div style="padding-left: 10px" class="product-list-detail">
                   <h6 class="mb-2">
                     {{ orderDetail.productDetail!.productDetailName }}
                   </h6>
@@ -281,7 +279,7 @@
             <tr *ngFor="let orderDetail of currentOrder.orderDetails">
               <td>
                 <img
-                  [src]="'orderDetail.productDetail.image'"
+                  [src]="orderDetail.productDetail.image"
                   alt=""
                   width="50"
                 />

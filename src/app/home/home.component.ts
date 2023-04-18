@@ -8,6 +8,8 @@ import { Subscription } from 'rxjs';
 import { FavoriteProductService } from '../service/favorite.service';
 import { customerStore } from '../dashboard/customer.repository';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import Swal from 'sweetalert2';
+import { CommonService } from '../common-services/common.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -16,7 +18,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class HomeComponent implements OnInit {
   customer!: CustomerDto;
   subCustomer!: Subscription;
-  favoriteProduct!: FavoriteProduct;
   currentProduct!: number;
   product!: ProductDTO;
   products: ProductDTO[] = [];
@@ -29,7 +30,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private productsService: ProductsService,
     private favoriteProductsService: FavoriteProductService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private commonService: CommonService
   ) {}
   //Slider settings
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
@@ -51,19 +53,19 @@ export class HomeComponent implements OnInit {
       customer: this.customer,
       product: product,
     };
-    this.favoriteProductsService
-      .createFavoriteProduct(data)
-      .subscribe((res) => {
-        if (res.code == '000') {
-          this.favoriteProduct = res.items;
-          this.message.success(
-            'Sản phẩm đã được thêm vào danh sách yêu thích!'
-          );
-        }
-        if (res.code == '409') {
-          this.message.error(
-            'Sản phẩm này đã có trong danh sách sản phẩm yêu thích của bạn!'
-          );
+    this.commonService
+      .confirm('Bạn có muốn thêm sản phẩm này vào danh sách yêu thích?')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.favoriteProductsService
+            .createFavoriteProduct(data)
+            .subscribe((res) => {
+              if (res) {
+                this.commonService.success(
+                  'Thêm sản phẩm vào danh sách yêu thích thành công'
+                );
+              }
+            });
         }
       });
   }
