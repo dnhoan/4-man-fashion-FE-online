@@ -35,7 +35,7 @@
           <small
             class="col alert text-danger col-12"
             role="alert"
-            *ngIf="formProfile.get('phoneNumber')?.errors?.['pattern'] && formProfile.get('phoneNumber')?.touched || submit && formProfile.get('phoneNumber')?.errors?.['email'] "
+            *ngIf="formProfile.get('phoneNumber')?.errors?.['pattern'] && formProfile.get('phoneNumber')?.touched || submit && formProfile.get('phoneNumber')?.errors?.['pattern'] "
           >
             Số điện thoại không đúng định dạng!
           </small>
