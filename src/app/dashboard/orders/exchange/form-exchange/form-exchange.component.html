@@ -148,7 +148,12 @@
         orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
       "
     >
-      <button nz-button nzType="default" class="me-2" (click)="reject()">
+      <button
+        nz-button
+        nzType="default"
+        class="me-2"
+        (click)="reject(); $event.preventDefault()"
+      >
         Hủy đổi trả
       </button>
     </div>

@@ -30,17 +30,19 @@ export class CommonService {
   }
   success(text: string) {
     Swal.fire({
+      position: 'top-end',
       title: 'Thành công',
       text,
       icon: 'success',
-      confirmButtonText: 'Đóng',
+      showConfirmButton: false,
+      timer: 1500,
     });
   }
   confirm(title: string) {
     return Swal.fire({
       title,
       showCancelButton: true,
-      confirmButtonText: 'Xóa',
+      confirmButtonText: 'Đồng ý',
       denyButtonText: `Không`,
     });
   }
@@ -108,17 +110,17 @@ export class CommonService {
     },
     {
       status: ORDER_DETAIL_STATUS.REJECT_RETURN,
-      title: 'Hủy trả hàng hoàn tiền',
+      title: 'Đã hủy trả hàng',
       color: '#ff3300',
     },
     {
       status: ORDER_DETAIL_STATUS.REJECT_EXCHANGE,
-      title: 'Hủy đổi hàng',
+      title: 'Đã hủy đổi hàng',
       color: '#ff3300',
     },
     {
       status: ORDER_DETAIL_STATUS.RETURN_PENDING,
-      title: 'Chờ xác nhận trả hàng hoàn tiền',
+      title: 'Chờ xác nhận trả hàng',
       color: '#1890ff',
     },
     {

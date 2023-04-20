@@ -14,10 +14,13 @@ import { CommonConstants } from 'src/app/constants/common-constants';
 import { Address } from 'src/app/model/address.model';
 import { CustomerDto } from 'src/app/model/CustomerDto.model';
 import { District, Province, Ward } from 'src/app/model/province.model';
-import { EmptyValidator } from 'src/validators/emailOrPhone.validator';
+import {
+  EmailValidator,
+  EmptyValidator,
+  PhoneNumber,
+} from 'src/validators/emailOrPhone.validator';
 import { customerStore } from '../customer.repository';
 import { EditAddressComponent } from '../edit-address/edit-address.component';
-import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-address',
@@ -25,120 +28,79 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrls: ['./address.component.scss'],
 })
 export class AddressComponent implements OnInit {
-  provinces: Province[] = [];
-  districts: District[] = [];
-  wards: Ward[] = [];
-  selected: any;
   formAddress!: FormGroup;
-  loadingProvince = false;
-  loadingDistrict = false;
-  loadingWard = false;
   currentCustomer!: CustomerDto;
   isVisibleModal = false;
-  inputAddress: string = '';
-  currentAddresses!: Address;
   currentAddress!: number;
-  addresss: Address[] = [];
-  inputProvince: string = '';
-  inputDistrict: string = '';
-  inputWard: string = '';
-  inputDetail: string = '';
-  subSearchOrder!: Subscription;
+  i_address!: number;
+  addresses: Address[] = [];
+  address!: Address | null;
+
   constructor(
     private modalService: NzModalService,
     private viewContainerRef: ViewContainerRef,
     private addressService: AddressesService,
     private commonService: CommonService,
-    private modal: NzModalRef,
-    private fb: FormBuilder,
-    private message: NzMessageService
+    private modal: NzModalService,
+    private modalRef: NzModalRef,
+    private fb: FormBuilder
   ) {}
   ngOnInit(): void {
-    this.loadingProvince = true;
-    this.addressService.getProvinces().subscribe((res) => {
-      this.provinces = res;
-      this.loadingProvince = false;
-    });
     this.currentCustomer = customerStore.getValue().customer!;
+    this.formAddress = this.fb.group({
+      address: ['', Validators.required],
+      recipientName: ['', Validators.compose([EmptyValidator()])],
+      recipientPhone: ['', Validators.compose([PhoneNumber()])],
+      recipientEmail: ['', Validators.compose([EmailValidator()])],
+    });
     this.addressService
       .getAddressByCustomerId(this.currentCustomer.id)
       .subscribe((res) => {
-        this.addresss = res;
+        this.addresses = res;
       });
-    this.formAddress = this.fb.group({
-      province: [null, Validators.required],
-      district: [null, Validators.required],
-      ward: [null, Validators.required],
-      detail: ['', Validators.compose([EmptyValidator()])],
-    });
   }
 
   onSubmit() {
     if (this.formAddress.valid) {
       let value = this.formAddress.value;
       let data: Address = {
-        detail: value.detail,
+        detail: value.address.detail,
         id: this.currentAddress,
-        wardCode: value.ward.code,
-        ward: value.ward.name,
-        districtCode: value.district.code,
-        district: value.district.name,
-        provinceCode: value.province.code,
-        province: value.province.name,
+        wardCode: value.address.wardCode,
+        ward: value.address.ward,
+        districtCode: value.address.districtCode,
+        district: value.address.district,
+        provinceCode: value.address.provinceCode,
+        province: value.address.province,
         status: CommonConstants.STATUS.ACTIVE,
+        recipientEmail: value.recipientEmail,
+        recipientName: value.recipientName,
+        recipientPhone: value.recipientPhone,
       };
-
-      if (this.currentAddress) {
+      if (this.currentAddress >= 0) {
         this.addressService.updateCustomerAddress(data).subscribe((res) => {
-          this.addressService
-            .getAddressByCustomerId(this.currentCustomer.id)
-            .subscribe((res) => {
-              this.addresss = res;
-            });
-          this.message.success('Cập nhật địa chỉ người dùng thành công!');
-          this.isVisibleModal = false;
+          if (res) {
+            this.addresses[this.i_address] = res;
+            this.commonService.success(
+              'Cập nhật địa chỉ người dùng thành công!'
+            );
+            this.isVisibleModal = false;
+            this.formAddress.reset();
+            this.i_address = -1;
+          }
         });
       } else {
         let customer = customerStore.getValue().customer;
         this.addressService
           .createCustomerAddress(customer?.id!, data)
           .subscribe((res) => {
+            this.commonService.success('Thêm địa chỉ người dùng thành công!');
+            this.addresses.unshift(res);
             this.isVisibleModal = false;
+            this.formAddress.reset();
           });
       }
     }
-  }
-
-  onChangeProvince(province: Province) {
-    this.loadingDistrict = true;
-    this.formAddress.patchValue({
-      district: null,
-      ward: null,
-    });
-    this.districts = [];
-    this.wards = [];
-    this.addressService.getDistricts(province.code!).subscribe((res) => {
-      this.districts = res;
-      this.loadingDistrict = false;
-    });
-  }
-
-  onChangeDistrict(district: District) {
-    if (district) {
-      this.loadingWard = true;
-      this.formAddress.patchValue({
-        ward: null,
-      });
-      this.wards = [];
-      this.addressService.getWards(district.code!).subscribe((res) => {
-        this.wards = res;
-        this.loadingWard = false;
-      });
-    }
-  }
-
-  onChangeWard(ward: Ward) {
-    console.log(this.formAddress.value);
   }
 
   removeAddress(address: Address, i: number) {
@@ -150,27 +112,56 @@ export class AddressComponent implements OnInit {
             .deleteAddressById(address.id!)
             .subscribe((res) => {
               if (res) {
-                this.addresss.splice(i, 1);
+                this.addresses.splice(i, 1);
                 this.commonService.success('Xóa địa chỉ thành công');
               }
             });
         }
       });
   }
-  showModal(idAddress: number): void {
-    this.currentAddress = idAddress;
+  showModal(address: Address, i: number) {
+    this.i_address = i;
+    this.currentAddress = address.id!;
+    this.isVisibleModal = true;
+    this.address = { ...address };
+    this.formAddress.patchValue({
+      address,
+      recipientName: address.recipientName,
+      recipientPhone: address.recipientPhone,
+      recipientEmail: address.recipientEmail,
+    });
+  }
+  openModalAdd() {
+    this.i_address = -1;
+    this.currentAddress = -1;
+    this.address = null;
+    this.formAddress.patchValue({
+      address: null,
+      recipientName: '',
+      recipientPhone: '',
+      recipientEmail: '',
+    });
     this.isVisibleModal = true;
   }
 
-  handleOk(): void {
-    this.onSubmit();
-    this.isVisibleModal = false;
+  updateAddress() {
+    const modal = this.modal.create({
+      nzTitle: 'Cập nhật địa chỉ',
+      nzContent: EditAddressComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.address = { ...this.address, ...result };
+        this.formAddress.patchValue({
+          address: this.address,
+        });
+      }
+    });
   }
-  cancel() {
-    this.modal.destroy(false);
-  }
-
   handleCancel(): void {
+    this.formAddress.reset();
     this.isVisibleModal = false;
   }
 }

@@ -8,187 +8,52 @@
             <div class="col-lg-8 pr-5">
               <div class="billing-details">
                 <h4 class="mb-4">Thông tin giao hàng</h4>
-
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="form-group mb-4">
-                      <label for="recipientName">Họ và tên</label>
-                      <input
-                        nz-input
-                        formControlName="recipientName"
-                        id="recipientName"
-                        nzSize="large"
-                      />
-                      <ng-container
-                        *ngIf="formCheckout.get('recipientName')!.invalid"
-                      >
-                        <span
-                          class="mt-1 text-danger"
-                          *ngIf="
-                            formCheckout.get('recipientName')?.touched ||
-                            form.submitted
-                          "
-                          >{{
-                            (formCheckout.get("recipientName")?.errors)![
-                              "empty"
-                            ]
-                          }}</span
-                        >
-                      </ng-container>
-                    </div>
-                  </div>
-                  <div class="col-lg-12">
-                    <div class="form-group mb-4">
-                      <label for="recipientPhone">Số điện thoại </label>
-                      <input
-                        nz-input
-                        formControlName="recipientPhone"
-                        id="recipientPhone"
-                        nzSize="large"
-                      />
-                      <ng-container
-                        *ngIf="formCheckout.get('recipientPhone')!.invalid"
-                      >
-                        <span
-                          class="mt-1 text-danger"
-                          *ngIf="
-                            formCheckout.get('recipientPhone')?.touched ||
-                            form.submitted
-                          "
-                          >{{
-                            (formCheckout.get("recipientPhone")?.errors)![
-                              "phoneNumber"
-                            ]
-                          }}</span
-                        >
-                      </ng-container>
-                    </div>
-                  </div>
-                  <div class="col-lg-12">
-                    <div class="form-group mb-4">
-                      <label for="recipientEmail">Email</label>
-                      <input
-                        nz-input
-                        formControlName="recipientEmail"
-                        id="recipientEmail"
-                        nzSize="large"
-                      />
-                      <ng-container
-                        *ngIf="formCheckout.get('recipientEmail')!.invalid"
-                      >
-                        <span
-                          class="mt-1 text-danger"
-                          *ngIf="
-                            formCheckout.get('recipientEmail')?.touched ||
-                            form.submitted
-                          "
-                          >{{
-                            (formCheckout.get("recipientEmail")?.errors)![
-                              "email"
-                            ]
-                          }}</span
-                        >
-                      </ng-container>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="form-group mb-4">
-                      <label for="address">Địa chỉ nhận hàng</label>
-                      <div class="d-flex justify-content-between">
-                        <nz-select
-                          class="w-100"
-                          nzSize="large"
-                          id="address"
-                          formControlName="address"
-                          (ngModelChange)="changeAddress()"
-                        >
-                          <nz-option
-                            *ngFor="let address of addresses; index as i"
-                            [nzValue]="address"
-                            nzCustomContent
-                            nzLabel="{{
-                              address.detail +
-                                ', ' +
-                                address.ward +
-                                ', ' +
-                                address.district +
-                                ', ' +
-                                address.district
-                            }}"
-                          >
-                            <div class="d-flex justify-content-between">
-                              <span>{{
-                                address.detail +
-                                  ", " +
-                                  address.ward +
-                                  ", " +
-                                  address.district +
-                                  ", " +
-                                  address.district
-                              }}</span>
-                              <span
-                                class="text-danger"
-                                nz-icon
-                                nzType="close"
-                                nzTheme="outline"
-                                (click)="
-                                  $event.stopPropagation();
-                                  removeAddress(address, i)
-                                "
-                              ></span>
-                            </div>
-                          </nz-option>
-                        </nz-select>
-
-                        <a
-                          class="text-primary"
-                          nz-button
-                          (click)="editAddress()"
-                          nzSize="large"
-                          nzType="link"
-                        >
-                          <span nz-icon nzType="edit" nzTheme="outline"></span>
-                        </a>
-                      </div>
-                      <ng-container
-                        *ngIf="formCheckout.get('address')!.invalid"
-                      >
-                        <span
-                          class="mt-1 text-danger row col-12"
-                          *ngIf="
-                            formCheckout.get('address')?.touched ||
-                            form.submitted
-                          "
-                          >{{
-                            (formCheckout.get("address")?.errors)!["required"]
-                              ? "Vui lòng chọn địa chỉ"
-                              : ""
-                          }}</span
-                        >
-                      </ng-container>
-                      <button
-                        nz-button
-                        (click)="addAddress(); $event.preventDefault()"
-                        nzSize="large"
-                        class="mt-2"
-                      >
-                        Thêm địa chỉ
-                      </button>
-                    </div>
-                  </div>
-                  <div class="col-lg-12">
-                    <div class="form-group mb-4">
-                      <label for="note">Ghi chú</label>
-                      <textarea
-                        class="form-control"
-                        formControlName="note"
-                        id="note"
-                        cols="30"
-                        rows="5"
-                        placeholder="Ghi chú đơn hàng"
-                      ></textarea>
-                    </div>
-                  </div>
+                <ng-container *ngIf="!addressSelected; else showInfoAddress">
+                  <button
+                    nz-button
+                    nzType="primary"
+                    (click)="openModalSelectAddress(); $event.preventDefault()"
+                  >
+                    Chọn địa chỉ
+                  </button>
+                  <span class="text-danger" *ngIf="form.submitted"
+                    >Vui lòng chọn địa chỉ</span
+                  >
+                </ng-container>
+                <ng-template #showInfoAddress>
+                  <p>Họ và tên: {{ addressSelected.recipientName }}</p>
+                  <p>Số điện thoại: {{ addressSelected.recipientPhone }}</p>
+                  <p>Email: {{ addressSelected.recipientEmail }}</p>
+                  <p>
+                    Địa chỉ:
+                    {{
+                      addressSelected.detail +
+                        ", " +
+                        addressSelected.ward +
+                        ", " +
+                        addressSelected.district +
+                        ", " +
+                        addressSelected.province
+                    }}
+                  </p>
+                  <button
+                    nz-button
+                    nzType="default"
+                    (click)="openModalSelectAddress(); $event.preventDefault()"
+                  >
+                    Thay đổi
+                  </button>
+                </ng-template>
+                <div class="form-group mb-4 mt-3">
+                  <label for="note">Ghi chú</label>
+                  <textarea
+                    class="form-control"
+                    formControlName="note"
+                    id="note"
+                    cols="30"
+                    rows="5"
+                    placeholder="Ghi chú đơn hàng"
+                  ></textarea>
                 </div>
               </div>
             </div>

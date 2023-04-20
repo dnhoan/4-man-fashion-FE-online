@@ -1,12 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { customerStore } from 'src/app/dashboard/customer.repository';
 import { Address } from 'src/app/model/address.model';
 import { District, Province, Ward } from 'src/app/model/province.model';
-import { EmptyValidator } from 'src/validators/emailOrPhone.validator';
+import {
+  EmailValidator,
+  EmptyValidator,
+  PhoneNumber,
+} from 'src/validators/emailOrPhone.validator';
 import { AddressesService } from './addresses.service';
+import { CommonService } from 'src/app/common-services/common.service';
+import { EditAddressComponent } from 'src/app/dashboard/edit-address/edit-address.component';
 
 @Component({
   selector: 'app-addresses',
@@ -14,123 +20,136 @@ import { AddressesService } from './addresses.service';
   styleUrls: ['./addresses.component.scss'],
 })
 export class AddressesComponent implements OnInit {
-  @Input() addressEdited!: Address;
-  provinces: Province[] = [];
-  districts: District[] = [];
-  wards: Ward[] = [];
+  @Input() addresses!: Address[];
+  address!: Address | null;
   formAddress!: FormGroup;
-  loadingProvince = false;
-  loadingDistrict = false;
-  loadingWard = false;
+  isVisibleModal = false;
+  currentAddress!: number;
+  i_address!: number;
   constructor(
     private addressService: AddressesService,
     private fb: FormBuilder,
-    private modal: NzModalRef
+    private modalRef: NzModalRef,
+    private modal: NzModalService,
+    private commonService: CommonService,
+    private viewContainerRef: ViewContainerRef
   ) {}
   ngOnInit(): void {
-    this.loadingProvince = true;
-    this.addressService.getProvinces().subscribe((res) => {
-      this.provinces = res;
-      this.loadingProvince = false;
-    });
-    if (this.addressEdited) {
-      // this.formAddress = this.fb.group({
-      //   province: [
-      //     {
-      //       name: this.addressEdited.province,
-      //       code: this.addressEdited.provinceCode,
-      //     },
-      //     Validators.required,
-      //   ],
-      //   district: [
-      //     {
-      //       name: this.addressEdited.district,
-      //       code: this.addressEdited.districtCode,
-      //     },
-      //     ,
-      //     Validators.required,
-      //   ],
-      //   ward: [
-      //     {
-      //       name: this.addressEdited.ward,
-      //       code: this.addressEdited.provinceCode,
-      //     },
-      //     ,
-      //     Validators.required,
-      //   ],
-      //   detail: ['', Validators.compose([EmptyValidator()])],
-      // });
-    } else {
-    }
     this.formAddress = this.fb.group({
-      province: [null, Validators.required],
-      district: [null, Validators.required],
-      ward: [null, Validators.required],
-      detail: ['', Validators.compose([EmptyValidator()])],
+      address: ['', Validators.required],
+      recipientName: ['', Validators.compose([EmptyValidator()])],
+      recipientPhone: ['', Validators.compose([PhoneNumber()])],
+      recipientEmail: ['', Validators.compose([EmailValidator()])],
     });
   }
   onSubmit() {
     if (this.formAddress.valid) {
       let value = this.formAddress.value;
       let data: Address = {
-        detail: value.detail,
-        id: 0,
-        wardCode: value.ward.code,
-        ward: value.ward.name,
-        districtCode: value.district.code,
-        district: value.district.name,
-        provinceCode: value.province.code,
-        province: value.province.name,
+        detail: value.address.detail,
+        id: this.currentAddress,
+        wardCode: value.address.wardCode,
+        ward: value.address.ward,
+        districtCode: value.address.districtCode,
+        district: value.address.district,
+        provinceCode: value.address.provinceCode,
+        province: value.address.province,
         status: CommonConstants.STATUS.ACTIVE,
+        recipientEmail: value.recipientEmail,
+        recipientName: value.recipientName,
+        recipientPhone: value.recipientPhone,
       };
-      if (this.addressEdited) {
-        // update
-        data.id = this.addressEdited.id;
+      if (this.currentAddress >= 0) {
         this.addressService.updateCustomerAddress(data).subscribe((res) => {
-          this.modal.destroy(res);
+          if (res) {
+            this.addresses[this.i_address] = res;
+            this.commonService.success(
+              'Cập nhật địa chỉ người dùng thành công!'
+            );
+            this.isVisibleModal = false;
+            this.formAddress.reset();
+            this.i_address = -1;
+          }
         });
-      } // create
-      else {
+      } else {
         let customer = customerStore.getValue().customer;
         this.addressService
           .createCustomerAddress(customer?.id!, data)
           .subscribe((res) => {
-            this.modal.destroy(res);
+            this.commonService.success('Thêm địa chỉ người dùng thành công!');
+            this.addresses.unshift(res);
+            this.isVisibleModal = false;
+            this.formAddress.reset();
           });
       }
     }
   }
-  cancel() {
-    this.modal.destroy(false);
+  onSelectAddress() {
+    if (this.address) this.modalRef.destroy(this.address);
+    else this.commonService.info('Vui lòng chọn 1 địa chỉ');
   }
-  onChangeProvince(province: Province) {
-    this.loadingDistrict = true;
+  cancelSelectAddress() {
+    this.modalRef.destroy(null);
+  }
+  removeAddress(address: Address, i: number) {
+    this.commonService
+      .confirm('Bạn có muốn xóa địa chỉ này không?')
+      .then((res) => {
+        if (res.isConfirmed) {
+          this.addressService
+            .deleteAddressById(address.id!)
+            .subscribe((res) => {
+              if (res) {
+                this.addresses.splice(i, 1);
+                this.commonService.success('Xóa địa chỉ thành công');
+              }
+            });
+        }
+      });
+  }
+  showModal(address: Address, i: number) {
+    this.i_address = i;
+    this.currentAddress = address.id!;
+    this.isVisibleModal = true;
+    this.address = { ...address };
     this.formAddress.patchValue({
-      district: null,
-      ward: null,
-    });
-    this.districts = [];
-    this.wards = [];
-    this.addressService.getDistricts(province.code!).subscribe((res) => {
-      this.districts = res;
-      this.loadingDistrict = false;
+      address,
+      recipientName: address.recipientName,
+      recipientPhone: address.recipientPhone,
+      recipientEmail: address.recipientEmail,
     });
   }
-  onChangeDistrict(district: District) {
-    if (district) {
-      this.loadingWard = true;
-      this.formAddress.patchValue({
-        ward: null,
-      });
-      this.wards = [];
-      this.addressService.getWards(district.code!).subscribe((res) => {
-        this.wards = res;
-        this.loadingWard = false;
-      });
-    }
+  openModalAdd() {
+    this.i_address = -1;
+    this.currentAddress = -1;
+    this.address = null;
+    this.formAddress.patchValue({
+      address: null,
+      recipientName: '',
+      recipientPhone: '',
+      recipientEmail: '',
+    });
+    this.isVisibleModal = true;
   }
-  onChangeWard(ward: Ward) {
-    console.log(this.formAddress.value);
+
+  updateAddress() {
+    const modal = this.modal.create({
+      nzTitle: 'Cập nhật địa chỉ',
+      nzContent: EditAddressComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.address = { ...this.address, ...result };
+        this.formAddress.patchValue({
+          address: this.address,
+        });
+      }
+    });
   }
-  ngOnDestroy() {}
+  handleCancel(): void {
+    this.formAddress.reset();
+    this.isVisibleModal = false;
+  }
 }

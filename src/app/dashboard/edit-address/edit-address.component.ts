@@ -1,20 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { Subscription } from 'rxjs';
 import { AddressesService } from 'src/app/checkout/addresses/addresses.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
-import { customerStore } from 'src/app/dashboard/customer.repository';
-import { Address } from 'src/app/model/address.model';
 import { District, Province, Ward } from 'src/app/model/province.model';
 import { EmptyValidator } from 'src/validators/emailOrPhone.validator';
 
 @Component({
   selector: 'app-edit-address',
   templateUrl: './edit-address.component.html',
-  styleUrls: ['./edit-address.component.scss']
+  styleUrls: ['./edit-address.component.scss'],
 })
 export class EditAddressComponent implements OnInit {
-  @Input() addressEdited!: Address;
   provinces: Province[] = [];
   districts: District[] = [];
   wards: Ward[] = [];
@@ -22,6 +20,8 @@ export class EditAddressComponent implements OnInit {
   loadingProvince = false;
   loadingDistrict = false;
   loadingWard = false;
+  isVisibleModal = false;
+  address!: string;
   constructor(
     private addressService: AddressesService,
     private fb: FormBuilder,
@@ -33,35 +33,6 @@ export class EditAddressComponent implements OnInit {
       this.provinces = res;
       this.loadingProvince = false;
     });
-    if (this.addressEdited) {
-      // this.formAddress = this.fb.group({
-      //   province: [
-      //     {
-      //       name: this.addressEdited.province,
-      //       code: this.addressEdited.provinceCode,
-      //     },
-      //     Validators.required,
-      //   ],
-      //   district: [
-      //     {
-      //       name: this.addressEdited.district,
-      //       code: this.addressEdited.districtCode,
-      //     },
-      //     ,
-      //     Validators.required,
-      //   ],
-      //   ward: [
-      //     {
-      //       name: this.addressEdited.ward,
-      //       code: this.addressEdited.provinceCode,
-      //     },
-      //     ,
-      //     Validators.required,
-      //   ],
-      //   detail: ['', Validators.compose([EmptyValidator()])],
-      // });
-    } else {
-    }
     this.formAddress = this.fb.group({
       province: [null, Validators.required],
       district: [null, Validators.required],
@@ -72,32 +43,15 @@ export class EditAddressComponent implements OnInit {
   onSubmit() {
     if (this.formAddress.valid) {
       let value = this.formAddress.value;
-      let data: Address = {
-        detail: value.detail,
-        id: 0,
+      this.modal.destroy({
         wardCode: value.ward.code,
         ward: value.ward.name,
         districtCode: value.district.code,
         district: value.district.name,
         provinceCode: value.province.code,
         province: value.province.name,
-        status: CommonConstants.STATUS.ACTIVE,
-      };
-      if (this.addressEdited) {
-        // update
-        data.id = this.addressEdited.id;
-        this.addressService.updateCustomerAddress(data).subscribe((res) => {
-          this.modal.destroy(res);
-        });
-      } // create
-      else {
-        let customer = customerStore.getValue().customer;
-        this.addressService
-          .createCustomerAddress(customer?.id!, data)
-          .subscribe((res) => {
-            this.modal.destroy(res);
-          });
-      }
+        detail: value.detail,
+      });
     }
   }
   cancel() {
@@ -131,6 +85,9 @@ export class EditAddressComponent implements OnInit {
   }
   onChangeWard(ward: Ward) {
     console.log(this.formAddress.value);
+  }
+  showModal() {
+    this.isVisibleModal = true;
   }
   ngOnDestroy() {}
 }

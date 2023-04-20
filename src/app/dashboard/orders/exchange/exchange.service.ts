@@ -59,7 +59,6 @@ export class ExchangeService {
       .pipe(
         map((res) => {
           if (res.code == '000') {
-            this.commonService.success('Cập nhật đơn hàng thành công');
             return res.data;
           } else {
             this.commonService.error('Lỗi cập nhật đơn hàng');
@@ -78,7 +77,6 @@ export class ExchangeService {
       .pipe(
         map((res) => {
           if (res.code == '000') {
-            this.commonService.success('Cập nhật đơn hàng thành công');
             return res.data;
           } else {
             this.commonService.error('Lỗi cập nhậtđơn hàng');

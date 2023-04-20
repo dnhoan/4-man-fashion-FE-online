@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { JwtService } from '../common-services/jwt.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,10 +31,14 @@ export class DashboardComponent implements OnInit {
       title: 'Thay đổi mật khẩu',
     },
   ];
-  constructor(private jwtService: JwtService, private router: Router) {}
+  constructor(
+    private jwtService: JwtService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    let url = this.router.url;
+    let url = window.location.pathname;
     this.activeNav = this.nav.filter((n) =>
       n.routerLink.includes(url.split('/')[2])
     )[0].routerLink;

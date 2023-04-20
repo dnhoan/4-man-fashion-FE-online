@@ -10,6 +10,8 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { CommonService } from 'src/app/common-services/common.service';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { ORDER_DETAIL_STATUS } from 'src/app/constants/constant.constant';
+import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-form-exchange',
@@ -24,13 +26,16 @@ export class FormExchangeComponent implements OnInit {
   @Input() orderStatus!: number;
   formExchange!: FormGroup;
   images: string[] = [];
+
   ORDER_DETAIL_STATUS = ORDER_DETAIL_STATUS;
   constructor(
     private fb: FormBuilder,
     private storage: AngularFireStorage,
     private exchangeService: ExchangeService,
     private modalRef: NzModalRef,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private router: Router,
+    private message: NzMessageService
   ) {}
 
   ngOnInit(): void {
@@ -66,12 +71,12 @@ export class FormExchangeComponent implements OnInit {
       };
       this.orderDetail.exchange = data;
       if (this.isExchange) {
-        this.orderDetail.quantity = 0;
         this.orderDetail.quantityOrigin = valueForm.quantity;
+        this.orderDetail.quantity = 0;
         this.exchangeOrderDetail();
       } else {
-        this.orderDetail.quantity = 0;
         this.orderDetail.quantityOrigin = valueForm.quantity * -1;
+        this.orderDetail.quantity = 0;
         this.returnOrderDetail();
       }
     }
@@ -87,8 +92,15 @@ export class FormExchangeComponent implements OnInit {
       })
       .subscribe((res) => {
         if (res) {
-          this.commonService.success('Yêu cầu trả hàng thành công');
-          this.modalRef.destroy(true);
+          this.commonService.success('Yêu cầu đổi hàng thành công');
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/order'], {
+              queryParams: {
+                'tab-index': 6,
+              },
+            });
+            location.reload();
+          }, 1000);
         }
       });
   }
@@ -103,27 +115,66 @@ export class FormExchangeComponent implements OnInit {
       })
       .subscribe((res) => {
         if (res) {
+          this.modalRef.close(true);
           this.commonService.success('Yêu cầu trả hàng thành công');
-          this.modalRef.destroy(true);
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/order'], {
+              queryParams: {
+                'tab-index': 6,
+              },
+            });
+            location.reload();
+          }, 1000);
         }
       });
   }
   reject() {
-    if (
-      this.orderDetail.statusOrderDetail == ORDER_DETAIL_STATUS.RETURN_PENDING
-    ) {
-      this.exchangeService
-        .rejectReturnOrderDetail(this.orderDetail)
-        .subscribe((res) => {
-          console.log(res);
-        });
-    } else {
-      this.exchangeService
-        .rejectExchangeOrderDetail(this.orderDetail)
-        .subscribe((res) => {
-          console.log(res);
-        });
-    }
+    this.commonService.confirm('Bạn có muốn hủy đổi trả?').then((res) => {
+      if (res.isConfirmed) {
+        if (
+          this.orderDetail.statusOrderDetail ==
+          ORDER_DETAIL_STATUS.RETURN_PENDING
+        ) {
+          this.exchangeService
+            .rejectReturnOrderDetail(this.orderDetail)
+            .subscribe((res) => {
+              if (res) {
+                this.orderDetail.statusOrderDetail =
+                  ORDER_DETAIL_STATUS.REJECT_RETURN;
+                this.commonService.success('Cập nhật đơn hàng thành công');
+                this.modalRef.destroy({ result: true });
+                setTimeout(() => {
+                  this.router.navigate(['/dashboard/order'], {
+                    queryParams: {
+                      'tab-index': 6,
+                    },
+                  });
+                  location.reload();
+                }, 1000);
+              }
+            });
+        } else {
+          this.exchangeService
+            .rejectExchangeOrderDetail(this.orderDetail)
+            .subscribe((res) => {
+              if (res) {
+                this.orderDetail.statusOrderDetail =
+                  ORDER_DETAIL_STATUS.REJECT_EXCHANGE;
+                this.commonService.success('Cập nhật đơn hàng thành công');
+                setTimeout(() => {
+                  this.router.navigate(['/dashboard/order'], {
+                    queryParams: {
+                      'tab-index': 6,
+                    },
+                  });
+                  location.reload();
+                }, 1000);
+                this.modalRef.destroy({ result: true });
+              }
+            });
+        }
+      }
+    });
   }
   removeImage(i: number) {
     this.images.splice(i, 1);

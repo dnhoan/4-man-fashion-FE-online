@@ -1,4 +1,4 @@
-import { CustomerDto } from "./CustomerDto.model";
+import { CustomerDto } from './CustomerDto.model';
 
 export interface Address {
   id?: number;
@@ -10,4 +10,7 @@ export interface Address {
   province?: string;
   detail?: string;
   status?: number;
+  recipientEmail: string;
+  recipientName: string;
+  recipientPhone: string;
 }

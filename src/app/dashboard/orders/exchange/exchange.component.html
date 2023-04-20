@@ -10,7 +10,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let orderDetail of order.orderDetails">
-      <td>ảnh</td>
+      <td><img [src]="orderDetail.productDetail.image" alt="" width="50" /></td>
       <td>
         <b>{{ orderDetail.productDetail.productDetailName }}</b> <br />
         <div class="mt-3 d-flex">
