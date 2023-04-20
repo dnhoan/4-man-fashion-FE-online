@@ -8,7 +8,7 @@ export function EmailOrPhoneNumber(): ValidatorFn {
     let r_email = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
     if ((controlVal || '').trim().length === 0) {
-      return { account: 'Chưa email hoặc số điện thoại' };
+      return { account: 'Chưa nhập email hoặc số điện thoại' };
     }
     if ((controlVal || '').trim().length > 225) {
       return { account: 'Email hoặc số điện thoại dưới 225 ký tự' };
