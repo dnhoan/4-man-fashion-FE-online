@@ -7,6 +7,7 @@
         [nzLoading]="loadingProvince"
         nzSize="large"
         (ngModelChange)="onChangeProvince($event)"
+        style="width: 100%"
       >
         <nz-option
           *ngFor="let province of provinces"
@@ -34,6 +35,7 @@
         [nzLoading]="loadingDistrict"
         nzSize="large"
         (ngModelChange)="onChangeDistrict($event)"
+        style="width: 100%"
       >
         <nz-option
           *ngFor="let district of districts"
@@ -53,32 +55,35 @@
         >
       </ng-container>
     </div>
-    <div class="form-group mb-4">
-      <label for="">Phường/xã</label>
-      <nz-select
-        formControlName="ward"
-        [nzDisabled]="this.formAddress.get('district')?.value ? false : true"
-        [nzLoading]="loadingWard"
-        (ngModelChange)="onChangeWard($event)"
-        nzSize="large"
-      >
-        <nz-option
-          *ngFor="let ward of wards"
-          [nzValue]="ward"
-          [nzLabel]="ward.name!"
-        ></nz-option>
-      </nz-select>
-      <ng-container *ngIf="formAddress.get('ward')!.invalid">
-        <span
-          class="mt-1 text-danger"
-          *ngIf="formAddress.get('ward')?.touched"
-          >{{
-            (formAddress.get("ward")?.errors)!["required"]
-              ? "Vui lòng chọn Xã/Phường"
-              : ""
-          }}</span
+    <div>
+      <div class="form-group mb-4">
+        <label for="">Phường/xã</label> <br />
+        <nz-select
+          formControlName="ward"
+          [nzDisabled]="this.formAddress.get('district')?.value ? false : true"
+          [nzLoading]="loadingWard"
+          (ngModelChange)="onChangeWard($event)"
+          nzSize="large"
+          style="width: 100%"
         >
-      </ng-container>
+          <nz-option
+            *ngFor="let ward of wards"
+            [nzValue]="ward"
+            [nzLabel]="ward.name!"
+          ></nz-option>
+        </nz-select>
+        <ng-container *ngIf="formAddress.get('ward')!.invalid">
+          <span
+            class="mt-1 text-danger"
+            *ngIf="formAddress.get('ward')?.touched"
+            >{{
+              (formAddress.get("ward")?.errors)!["required"]
+                ? "Vui lòng chọn Xã/Phường"
+                : ""
+            }}</span
+          >
+        </ng-container>
+      </div>
     </div>
     <div>
       <div class="form-group mb-4">
@@ -107,9 +112,7 @@
       >
         Hủy
       </button>
-      <button nz-button type="submit" [nzType]="'primary'" nzSize="large">
-        {{ addressEdited ? 'Lưu': 'Thêm'}}
-      </button>
+      <button nz-button type="submit" nzSize="large">Lưu</button>
     </div>
   </form>
 </div>

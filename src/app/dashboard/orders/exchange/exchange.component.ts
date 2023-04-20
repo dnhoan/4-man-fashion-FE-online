@@ -34,8 +34,12 @@ export class ExchangeComponent implements OnInit {
       },
     });
     modal.afterClose.subscribe((result) => {
+      console.log('result', result);
+
       if (result) {
-        this.modalRef.destroy(true);
+        console.log('result exchange', result);
+
+        this.modalRef.destroy(result);
       }
     });
   }

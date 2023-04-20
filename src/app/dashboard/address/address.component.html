@@ -1,143 +1,161 @@
 <div class="account-info">
   <h4 class="mb-4 text-center">Danh sách địa chỉ</h4>
-  <ul nz-list [nzDataSource]="addresss" nzBordered nzSize="large">
-    <li
-      style="font-size: larger"
-      nz-list-item
-      *ngFor="let address of addresss; index as i"
-      nzNoFlex
-    >
-      <ul nz-list-item-actions>
-        <nz-list-item-action>
-          <a (click)="showModal(address.id!)" style="color: #0c1eec">Edit</a>
-        </nz-list-item-action>
-      </ul>
-      {{
-        address.detail +
-          ", " +
-          address.ward +
-          ", " +
-          address.district +
-          ", " +
-          address.province
-      }}
-    </li>
-  </ul>
+  <button class="mb-2" nz-button nzType="primary" (click)="openModalAdd()">
+    Thêm mới địa chỉ
+  </button>
+  <nz-list nzBordered>
+    <nz-list-item *ngFor="let address of addresses; let i = index">
+      <nz-descriptions>
+        <nz-descriptions-item nzTitle="Họ và tên">{{
+          address.recipientName
+        }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Số điện thoại">{{
+          address.recipientPhone
+        }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Email">{{
+          address.recipientEmail
+        }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Address">
+          {{
+            address.detail +
+              ", " +
+              address.ward +
+              ", " +
+              address.district +
+              ", " +
+              address.province
+          }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+      <a
+        (click)="showModal(address, i)"
+        style="color: #0c1eec; margin-right: 10px"
+        >Sửa</a
+      >
+      <a (click)="removeAddress(address, i)" style="color: #ec0c3d">Xóa</a>
+    </nz-list-item>
+  </nz-list>
 </div>
 <nz-modal
   [(nzVisible)]="isVisibleModal"
   nzTitle="Cập nhật địa chỉ người dùng"
-  (nzOnCancel)="handleCancel()"
-  (nzOnOk)="handleOk()"
-  nzCancelText="Hủy"
-  nzOkText="Lưu"
+  [nzFooter]="null"
 >
   <ng-container *nzModalContent>
-    <div>
-      <form [formGroup]="formAddress" (ngSubmit)="onSubmit()">
+    <form [formGroup]="formAddress" #form="ngForm" (ngSubmit)="onSubmit()">
+      <div>
         <div class="form-group mb-4">
-          <label for="">Tỉnh/Thành phố</label>
-          <nz-select
-            formControlName="province"
-            [nzLoading]="loadingProvince"
+          <label for="recipientName">Họ và tên</label>
+          <input
+            nz-input
+            formControlName="recipientName"
+            id="recipientName"
             nzSize="large"
-            (ngModelChange)="onChangeProvince($event)"
-          >
-            <nz-option
-              *ngFor="let province of provinces"
-              [nzValue]="province"
-              [nzLabel]="province.name!"
-            ></nz-option>
-          </nz-select>
-          <ng-container *ngIf="formAddress.get('province')!.invalid">
+          />
+          <ng-container *ngIf="formAddress.get('recipientName')!.invalid">
             <span
               class="mt-1 text-danger"
-              *ngIf="formAddress.get('province')?.touched"
+              *ngIf="
+                formAddress.get('recipientName')?.touched || form.submitted
+              "
+              >{{ (formAddress.get("recipientName")?.errors)!["empty"] }}</span
+            >
+          </ng-container>
+        </div>
+        <div class="form-group mb-4">
+          <label for="recipientPhone">Số điện thoại </label>
+          <input
+            nz-input
+            formControlName="recipientPhone"
+            id="recipientPhone"
+            nzSize="large"
+          />
+          <ng-container *ngIf="formAddress.get('recipientPhone')!.invalid">
+            <span
+              class="mt-1 text-danger"
+              *ngIf="
+                formAddress.get('recipientPhone')?.touched || form.submitted
+              "
               >{{
-                (formAddress.get("province")?.errors)!["required"]
-                  ? "Vui lòng chọn Tỉnh/Thành phố"
-                  : ""
+                (formAddress.get("recipientPhone")?.errors)!["phoneNumber"]
               }}</span
             >
           </ng-container>
         </div>
         <div class="form-group mb-4">
-          <label for="">Quận/Huyện</label>
-          <nz-select
-            formControlName="district"
-            [nzDisabled]="
-              this.formAddress.get('province')?.value ? false : true
-            "
-            [nzLoading]="loadingDistrict"
+          <label for="recipientEmail">Email</label>
+          <input
+            nz-input
+            formControlName="recipientEmail"
+            id="recipientEmail"
             nzSize="large"
-            (ngModelChange)="onChangeDistrict($event)"
-          >
-            <nz-option
-              *ngFor="let district of districts"
-              [nzValue]="district"
-              [nzLabel]="district.name!"
-            ></nz-option>
-          </nz-select>
-          <ng-container *ngIf="formAddress.get('district')!.invalid">
+          />
+          <ng-container *ngIf="formAddress.get('recipientEmail')!.invalid">
             <span
               class="mt-1 text-danger"
-              *ngIf="formAddress.get('district')?.touched"
-              >{{
-                (formAddress.get("district")?.errors)!["required"]
-                  ? "Vui lòng chọn Quận/Huyện"
-                  : ""
-              }}</span
+              *ngIf="
+                formAddress.get('recipientEmail')?.touched || form.submitted
+              "
+              >{{ (formAddress.get("recipientEmail")?.errors)!["email"] }}</span
             >
           </ng-container>
         </div>
-        <div class="form-group mb-4">
-          <label for="">Phường/xã</label>
-          <nz-select
-            formControlName="ward"
-            [nzDisabled]="
-              this.formAddress.get('district')?.value ? false : true
-            "
-            [nzLoading]="loadingWard"
-            (ngModelChange)="onChangeWard($event)"
-            nzSize="large"
-          >
-            <nz-option
-              *ngFor="let ward of wards"
-              [nzValue]="ward"
-              [nzLabel]="ward.name!"
-            ></nz-option>
-          </nz-select>
-          <ng-container *ngIf="formAddress.get('ward')!.invalid">
-            <span
-              class="mt-1 text-danger"
-              *ngIf="formAddress.get('ward')?.touched"
-              >{{
-                (formAddress.get("ward")?.errors)!["required"]
-                  ? "Vui lòng chọn Xã/Phường"
-                  : ""
-              }}</span
-            >
-          </ng-container>
-        </div>
-        <div>
-          <div class="form-group mb-4">
-            <label for="detail">Địa chỉ chi tiết</label>
-            <textarea
-              nz-input
-              placeholder=""
-              formControlName="detail"
-              [nzAutosize]="{ minRows: 2, maxRows: 6 }"
-            ></textarea>
-            <ng-container *ngIf="formAddress.get('detail')!.invalid">
-              <span
-                class="mt-1 text-danger"
-                *ngIf="formAddress.get('detail')?.touched"
-                >{{ (formAddress.get("detail")?.errors)!["detail"] }}</span
-              >
-            </ng-container>
-          </div>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div
+        class="d-flex justify-content-between mt-2"
+        *ngIf="address; else addAddress"
+      >
+        <nz-list class="w-100" ist nzBordered>
+          <nz-list-item>
+            <span nz-typography>{{
+              address.detail +
+                ", " +
+                address.ward +
+                ", " +
+                address.district +
+                ", " +
+                address.province
+            }}</span>
+            <a (click)="updateAddress()"
+              ><span nz-icon nzType="edit" nzTheme="outline"></span
+            ></a>
+          </nz-list-item>
+        </nz-list>
+      </div>
+      <ng-template #addAddress>
+        <button
+          nz-button
+          nzType="dashed"
+          (click)="updateAddress(); $event.preventDefault()"
+        >
+          <span nz-icon nzType="plus" nzTheme="outline"></span> Thêm địa chỉ
+        </button>
+      </ng-template>
+      <ng-container *ngIf="formAddress.get('address')!.invalid">
+        <span
+          class="mt-1 text-danger"
+          *ngIf="formAddress.get('address')?.touched || form.submitted"
+          >{{
+            (formAddress.get("address")?.errors)!["required"]
+              ? "Thêm địa chỉ"
+              : ""
+          }}</span
+        >
+      </ng-container>
+      <div class="mt-3 d-flex justify-content-end">
+        <button
+          style="margin-right: 10px"
+          class="mb-2"
+          nz-button
+          nzType="default"
+          (click)="handleCancel(); $event.preventDefault()"
+        >
+          Hủy
+        </button>
+        <button type="submit" class="mb-2" nz-button nzType="primary">
+          Lưu
+        </button>
+      </div>
+    </form>
   </ng-container>
 </nz-modal>

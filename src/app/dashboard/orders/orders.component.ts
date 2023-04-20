@@ -21,6 +21,8 @@ import { ExchangeComponent } from './exchange/exchange.component';
 import { OrderDetail } from 'src/app/model/orderDetail.model';
 import { FormExchangeComponent } from './exchange/form-exchange/form-exchange.component';
 import { ORDER_DETAIL_STATUS } from 'src/app/constants/constant.constant';
+import { CommonConstants } from 'src/app/constants/common-constants';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-orders',
@@ -52,8 +54,18 @@ export class OrdersComponent implements OnInit {
     private ordersService: OrdersService,
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,
-    private orderService: OrdersService
-  ) {}
+    private orderService: OrdersService,
+    private activateRoute: ActivatedRoute
+  ) {
+    this.activateRoute.queryParams.subscribe((params) => {
+      console.log(params);
+      if (params && params['tab-index']) {
+        this.searchOrder.status = params['tab-index'];
+        this.tabIndexSelected = params['tab-index'] - 1;
+        console.log(this.searchOrder);
+      }
+    });
+  }
 
   ngOnInit(): void {
     let customer = customerStore.getValue().customer;
@@ -133,7 +145,13 @@ export class OrdersComponent implements OnInit {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
+        console.log('result: ', result);
+
         this.tabIndexSelected = 5;
+        this.searchChange$.next({
+          ...this.searchOrder,
+          status: ORDER_STATUS.EXCHANGE,
+        });
       }
     });
   }

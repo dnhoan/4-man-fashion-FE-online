@@ -40,6 +40,7 @@ export class CheckoutComponent implements OnInit {
   formCheckout!: FormGroup;
   currentCustomer!: CustomerDto;
   addresses: Address[] = [];
+  addressSelected!: Address;
   cartItems: CartItemDto[] = [];
   totalMoneyCart = 0;
   shipFee: number = 0;
@@ -78,11 +79,30 @@ export class CheckoutComponent implements OnInit {
         this.addresses = res;
       });
     this.formCheckout = this.formBuilder.group({
-      recipientName: ['', Validators.compose([EmptyValidator()])],
-      recipientPhone: ['', Validators.compose([PhoneNumber()])],
-      recipientEmail: ['', Validators.compose([EmailValidator()])],
       note: '',
       address: [null, Validators.required],
+    });
+  }
+  openModalSelectAddress() {
+    const modal = this.modal.create({
+      nzTitle: 'Chọn địa chỉ',
+      nzContent: AddressesComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzComponentParams: {
+        addresses: this.addresses,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.addressSelected = { ...result };
+        this.getShipFee(
+          this.addressSelected.province!,
+          this.addressSelected.district!,
+          this.addressSelected.detail + ', ' + this.addressSelected.ward
+        );
+        this.formCheckout.patchValue({ address: this.addressSelected });
+      }
     });
   }
   addAddress() {
@@ -99,14 +119,6 @@ export class CheckoutComponent implements OnInit {
       }
     });
   }
-  changeAddress() {
-    let address = this.formCheckout.get('address')!.value;
-    this.getShipFee(
-      address.province,
-      address.district,
-      address.detail + ', ' + address.ward
-    );
-  }
   getShipFee(province: string, district: string, address: string) {
     this.checkoutService
       .getFeeShip(province, district, address)
@@ -116,59 +128,13 @@ export class CheckoutComponent implements OnInit {
         }
       });
   }
-  editAddress() {
-    let addressEdited = this.formCheckout.get('address')?.value;
-    if (addressEdited) {
-      const modal = this.modal.create({
-        nzTitle: 'Sửa địa chỉ',
-        nzContent: AddressesComponent,
-        nzViewContainerRef: this.viewContainerRef,
-        nzComponentParams: {
-          addressEdited,
-        },
-        nzFooter: null,
-      });
-      modal.afterClose.subscribe((result) => {
-        if (result) {
-          let i = this.addresses.findIndex((a) => a.id == addressEdited.id);
-          this.commonService.success('Cập nhật địa chỉ thành công');
-          this.addresses[i] = result;
-          this.formCheckout.patchValue({
-            address: result,
-          });
-        }
-      });
-    } else this.commonService.info('Vui lòng chọn địa chỉ');
-  }
-  removeAddress(address: Address, i: number) {
-    let addressSelected = this.formCheckout.get('address')!.value;
-    this.commonService
-      .confirm('Bạn có muốn xóa địa chỉ này không?')
-      .then((res) => {
-        if (res.isConfirmed) {
-          this.addressesService
-            .deleteAddressById(address.id!)
-            .subscribe((res) => {
-              if (res) {
-                if (addressSelected.id == address.id) {
-                  this.shipFee = 0;
-                  this.formCheckout.patchValue({
-                    address: null,
-                  });
-                }
-                this.addresses.splice(i, 1);
-                this.commonService.success('Xóa địa chỉ thành công');
-              }
-            });
-        }
-      });
-  }
   updateVoucher() {}
   checkout() {
     if (this.formCheckout.valid && this.cartItems.length) {
       let value = this.formCheckout.value;
       let data: OrderDto = {
-        ...value,
+        ...value.address,
+        note: value.note,
         address: `${value.address.detail}, ${value.address.ward}, ${value.address.district}, ${value.address.province}`,
         id: 0,
         customer: this.currentCustomer,
@@ -185,6 +151,7 @@ export class CheckoutComponent implements OnInit {
           price: item.productDetailDTO?.price,
           quantity: item.amount,
           productDetail: item.productDetailDTO,
+          quantityOrigin: item.amount,
         })),
         logsOrderStatus: [
           {
