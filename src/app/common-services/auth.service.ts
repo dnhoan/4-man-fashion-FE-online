@@ -7,11 +7,16 @@ import Swal from 'sweetalert2';
 import { JwtService } from './jwt.service';
 import { RequestService } from './request.service';
 
-export interface AccountInfo {
-  phoneOrEmail: string;
+export interface AccountSignupInfo {
+  email: string;
+  phoneNumber: string;
   password: string;
 }
 
+export interface AccountLoginInfo {
+  phoneOrEmail: string;
+  password: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -24,7 +29,7 @@ export class AuthService {
     private router: Router
   ) {}
 
-  login(accountInfo: AccountInfo) {
+  login(accountInfo: AccountLoginInfo) {
     return this.requestService
       .post(`${this.baseUrl}/api/auth/login`, accountInfo, 'login')
       .pipe(
@@ -44,7 +49,7 @@ export class AuthService {
         })
       );
   }
-  signup(accountInfo: AccountInfo) {
+  signup(accountInfo: AccountSignupInfo) {
     return this.requestService
       .post(`${this.baseUrl}/api/auth/signup`, accountInfo, 'Signup')
       .pipe(

@@ -9,8 +9,9 @@ import {
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import {
-  EmailOrPhoneNumber,
   PasswordValidator,
+  PhoneNumber,
+  EmailValidator
 } from 'src/validators/emailOrPhone.validator';
 import Swal from 'sweetalert2';
 import { AuthService } from '../common-services/auth.service';
@@ -27,7 +28,8 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
     this.signupForm = this.fb.group({
-      phoneOrEmail: ['', Validators.compose([EmailOrPhoneNumber()])],
+      email: ['', Validators.compose([EmailValidator()])],
+      phoneNumber: ['', Validators.compose([PhoneNumber()])],
       password: ['', Validators.compose([PasswordValidator()])],
       confirmPassword: ['', Validators.compose([PasswordValidator()])],
     });
@@ -46,7 +48,8 @@ export class SignupComponent implements OnInit {
     else if (this.signupForm.valid) {
       this.authService
         .signup({
-          phoneOrEmail: this.signupForm.value.phoneOrEmail,
+          email: this.signupForm.value.email,
+          phoneNumber: this.signupForm.value.phoneNumber,
           password: this.signupForm.value.password,
         })
         .subscribe();
