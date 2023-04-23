@@ -79,9 +79,17 @@
 
     <ul class="top-menu list-inline mb-0 d-none d-lg-block" id="top-menu">
       <li class="list-inline-item">
-        <a href="#" class="search_toggle" id="search-icon"
-          ><i class="tf-ion-android-search"></i
-        ></a>
+        <div class="custom-search">
+          <input
+            type="text"
+            class="custom-search-input"
+            placeholder="Tìm kiếm tên sản phẩm"
+            [(ngModel)]="search"
+          />
+          <button class="custom-search-botton" (click)="redirect()">
+            <i class="tf-ion-android-search"></i>
+          </button>
+        </div>
       </li>
 
       <li class="dropdown cart-nav dropdown-slide list-inline-item">

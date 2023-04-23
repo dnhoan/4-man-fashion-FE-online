@@ -4,6 +4,7 @@ export interface Size {
   status?: number;
   ctime?: string;
   mtime?: string;
+  isSelected?: boolean;
 }
 
 export interface SizeDTO {

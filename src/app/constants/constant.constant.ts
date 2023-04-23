@@ -36,6 +36,13 @@ export const ORDER_STATUS = {
   EXCHANGE: 6,
   CANCEL_ORDER: 7,
 };
+export const SORT_PRODUCT = {
+  DEFAULT: 0,
+  DESC_PRICE: 1,
+  ASC_PRICE: 2,
+  DESC_ALPHA: 3,
+  ASC_ALPHA: 4,
+};
 export const ORDER_DETAIL_STATUS = {
   INACTIVE: 0,
   ACTIVE: 1,

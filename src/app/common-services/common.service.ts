@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import {
   ORDER_DETAIL_STATUS,
   ORDER_STATUS,
+  SORT_PRODUCT,
 } from '../constants/constant.constant';
 import { OrderDetailStatus, OrderStatus } from '../model/orderStatus.model';
 
@@ -128,5 +129,13 @@ export class CommonService {
       title: 'Chờ xác nhận đổi hàng',
       color: '#1890ff',
     },
+  ];
+
+  filterProduct = [
+    { label: 'Mặc định', value: SORT_PRODUCT.DEFAULT },
+    { label: 'Giảm dần', value: SORT_PRODUCT.DESC_PRICE },
+    { label: 'Tăng dần', value: SORT_PRODUCT.ASC_PRICE },
+    { label: 'Từ A-Z', value: SORT_PRODUCT.ASC_ALPHA },
+    { label: 'Từ Z-A', value: SORT_PRODUCT.DESC_ALPHA },
   ];
 }

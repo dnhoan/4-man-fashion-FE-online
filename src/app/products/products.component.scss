@@ -1,0 +1,23 @@
+li.list-inline-item:hover {
+    background-color: #fb5c42;
+    color: white;
+}
+.options{
+    display: flex;
+    align-items: center;
+    border: 1px solid #eee;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-add-to-cart{
+    width: 49%;
+    background-color: white;
+    color: black !important;
+    border-color: #fb5c42;
+}
+.btn-add-to-cart:hover{
+    width: 49%;
+    background-color: #fb5c42;
+    color: rgb(255, 255, 255) !important;
+}
