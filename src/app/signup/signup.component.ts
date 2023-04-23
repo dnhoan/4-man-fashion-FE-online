@@ -11,7 +11,7 @@ import { Observable, of } from 'rxjs';
 import {
   PasswordValidator,
   PhoneNumber,
-  EmailValidator
+  EmailValidator,
 } from 'src/validators/emailOrPhone.validator';
 import Swal from 'sweetalert2';
 import { AuthService } from '../common-services/auth.service';
