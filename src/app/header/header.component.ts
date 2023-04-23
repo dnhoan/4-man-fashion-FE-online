@@ -9,6 +9,7 @@ import { CommonService } from '../common-services/common.service';
 import { JwtService } from '../common-services/jwt.service';
 import { customerStore } from '../dashboard/customer.repository';
 import { CartItemDto } from '../model/cartItemDto.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,7 @@ import { CartItemDto } from '../model/cartItemDto.model';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+  search = '';
   menuItemAccount: {
     routerLink: string;
     label: string;
@@ -27,7 +29,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     public jwtService: JwtService,
     private cartService: CartService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +85,13 @@ export class HeaderComponent implements OnInit {
           });
         }
       });
+  }
+  redirect() {
+    this.router.navigate(['/product'], {
+      queryParams: {
+        query: this.search,
+      },
+    });
   }
   ngOnDestroy() {
     this.subCustomerInfo.unsubscribe();

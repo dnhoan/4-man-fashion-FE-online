@@ -3,14 +3,14 @@ import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { RequestService } from '../common-services/request.service';
+import { SearchProduct } from '../model/search-product.model';
 import { SearchOption } from '../model/search-option.model';
-import { ProductDTO } from '../model/product.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-  apiProduct = `${environment.baseUrl}/api/admin`;
+  apiProduct = `${environment.baseUrl}/api/user`;
   constructor(private requestService: RequestService) {}
 
   getAllProduct(search: SearchOption) {
@@ -36,11 +36,29 @@ export class ProductsService {
       );
   }
 
-  getListproduct(): Observable<any> {
-    return this.requestService.get<any>(`${this.apiProduct}/product/getList`,
-    'lấy danh sách sản phẩm');
+  searchProduct(search: SearchProduct) {
+    return this.requestService
+      .post(
+        `${this.apiProduct}/product/searchProduct`,
+        search,
+        'lấy danh sách sản phẩm'
+      )
+      .pipe(
+        map((res) => {
+          if (res.code == '000') {
+            return res.data;
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Lỗi lấy danh sách sản phẩm!',
+              icon: 'error',
+              confirmButtonText: 'Đóng',
+            });
+            return false;
+          }
+        })
+      );
   }
-
 
   getProductById(idProduct: number) {
     return this.requestService

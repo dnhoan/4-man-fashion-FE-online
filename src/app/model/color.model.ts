@@ -5,6 +5,7 @@ export interface Color {
   status?: number;
   ctime?: string;
   mtime?: string;
+  isSelected?: boolean;
 }
 
 export interface ColorDTO {
