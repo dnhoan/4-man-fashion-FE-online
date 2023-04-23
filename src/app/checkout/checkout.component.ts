@@ -105,20 +105,6 @@ export class CheckoutComponent implements OnInit {
       }
     });
   }
-  addAddress() {
-    const modal = this.modal.create({
-      nzTitle: 'Thêm địa chỉ',
-      nzContent: AddressesComponent,
-      nzViewContainerRef: this.viewContainerRef,
-      nzFooter: null,
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        this.commonService.success('Thêm địa chỉ thành công');
-        this.addresses.unshift(result);
-      }
-    });
-  }
   getShipFee(province: string, district: string, address: string) {
     this.checkoutService
       .getFeeShip(province, district, address)

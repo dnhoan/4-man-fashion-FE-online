@@ -32,6 +32,25 @@ export class OrdersService {
         })
       );
   }
+  updateOrder(order: OrderDto) {
+    return this.requestService
+      .put(
+        `${environment.baseUrl}/api/user/order/update`,
+        order,
+        'cập nhật đơn hàng'
+      )
+      .pipe(
+        map((res: any) => {
+          if (res.code === '000') {
+            this.commonService.success('Cập nhật đơn hàng thành công');
+            return res.data;
+          } else {
+            this.commonService.error('Lỗi cập nhật đơn hàng');
+            return false;
+          }
+        })
+      );
+  }
   createOrder(order: OrderDto) {
     return this.requestService
       .post(

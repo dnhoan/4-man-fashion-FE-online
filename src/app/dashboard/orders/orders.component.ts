@@ -23,6 +23,10 @@ import { FormExchangeComponent } from './exchange/form-exchange/form-exchange.co
 import { ORDER_DETAIL_STATUS } from 'src/app/constants/constant.constant';
 import { CommonConstants } from 'src/app/constants/common-constants';
 import { ActivatedRoute } from '@angular/router';
+import { AddressesComponent } from 'src/app/checkout/addresses/addresses.component';
+import { AddressesService } from 'src/app/checkout/addresses/addresses.service';
+import { Address } from 'src/app/model/address.model';
+import { CheckoutService } from 'src/app/checkout/checkout.service';
 
 @Component({
   selector: 'app-orders',
@@ -49,13 +53,16 @@ export class OrdersComponent implements OnInit {
   subSearchOrder!: Subscription;
   searchChange$ = new BehaviorSubject<SearchOption>(this.searchOrder);
   isShowStatusHistory = false;
+  addresses: Address[] = [];
   constructor(
     public commonService: CommonService,
     private ordersService: OrdersService,
     private modal: NzModalService,
     private viewContainerRef: ViewContainerRef,
     private orderService: OrdersService,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private checkoutService: CheckoutService,
+    private addressesService: AddressesService
   ) {
     this.activateRoute.queryParams.subscribe((params) => {
       console.log(params);
@@ -70,6 +77,11 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     let customer = customerStore.getValue().customer;
     this.orderStatuses = this.commonService.orderStatuses;
+    this.addressesService
+      .getAddressByCustomerId(customer!.id)
+      .subscribe((res) => {
+        this.addresses = res;
+      });
     this.subSearchOrder = this.searchChange$
       .pipe(
         debounceTime(300),
@@ -107,6 +119,46 @@ export class OrdersComponent implements OnInit {
     let status = this.orderStatuses[e.index].status;
     this.searchChange$.next({ ...this.searchOrder, status });
   }
+  openModalSelectAddress(i_order: number) {
+    const modal = this.modal.create({
+      nzTitle: 'Chọn địa chỉ',
+      nzContent: AddressesComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzFooter: null,
+      nzComponentParams: {
+        addresses: this.addresses,
+      },
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.checkoutService
+          .getFeeShip(
+            result.province!,
+            result.district!,
+            result.detail + ', ' + result.ward
+          )
+          .subscribe((res) => {
+            if (res) {
+              let shipFee = res;
+              let address = `${result.detail}, ${result.ward}, ${result.district}, ${result.province}`;
+              let order = {
+                ...this.orders[i_order],
+                address,
+                shipFee,
+                recipientName: result.recipientName,
+                recipientPhone: result.recipientPhone,
+                recipientEmail: result.recipientEmail,
+              };
+              order.totalMoney =
+                order.goodsValue! + order.shipFee - order.sale!;
+              this.orderService.updateOrder(order).subscribe((res) => {
+                this.orders[i_order] = res;
+              });
+            }
+          });
+      }
+    });
+  }
   showModalFormInputExchange(
     orderDetail: OrderDetail,
     isExchange: boolean,
@@ -131,7 +183,26 @@ export class OrdersComponent implements OnInit {
       }
     });
   }
-  receivedOrder(orderId: number, i_order: number) {}
+  receivedOrder(orderId: number, i_order: number) {
+    this.commonService
+      .confirm('Bạn có muốn cập nhật đơn hàng này?')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.orderService
+            .updateOrderStatus(
+              orderId,
+              ORDER_STATUS.COMPLETE,
+              '',
+              customerStore.getValue().customer!.id
+            )
+            .subscribe((res) => {
+              if (res) {
+                this.orders.splice(this.i_order, 1);
+              }
+            });
+        }
+      });
+  }
   exchangeOrder(order: OrderDto, i_order: number) {
     const modal = this.modal.create({
       nzTitle: 'Đổi trả',
@@ -191,7 +262,6 @@ export class OrdersComponent implements OnInit {
   closeOrderDetail() {
     this.productDialog = false;
   }
-
   ngOnDestroy() {
     this.subSearchOrder.unsubscribe();
   }

@@ -13,6 +13,7 @@ import {
 import { AddressesService } from './addresses.service';
 import { CommonService } from 'src/app/common-services/common.service';
 import { EditAddressComponent } from 'src/app/dashboard/edit-address/edit-address.component';
+import { AddressComponent } from 'src/app/dashboard/address/address.component';
 
 @Component({
   selector: 'app-addresses',
@@ -83,6 +84,18 @@ export class AddressesComponent implements OnInit {
           });
       }
     }
+  }
+  addAddress() {
+    this.i_address = -1;
+    this.currentAddress = -1;
+    this.address = null;
+    this.formAddress.patchValue({
+      address: null,
+      recipientName: '',
+      recipientPhone: '',
+      recipientEmail: '',
+    });
+    this.isVisibleModal = true;
   }
   onSelectAddress() {
     if (this.address) this.modalRef.destroy(this.address);
