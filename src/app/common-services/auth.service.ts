@@ -36,7 +36,6 @@ export class AuthService {
         map((res) => {
           if (res.code == '000') {
             this.jwtService.setJwtToken(res.data.token);
-            this.router.navigate(['']);
             return true;
           }
           Swal.fire({

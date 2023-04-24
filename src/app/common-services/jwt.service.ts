@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CommonConstants } from '../constants/common-constants';
 import { customerStore } from '../dashboard/customer.repository';
+import { ROLE } from '../constants/constant.constant';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +12,8 @@ import { customerStore } from '../dashboard/customer.repository';
 export class JwtService {
   constructor(
     private readonly jwtHelper: JwtHelperService,
-    private router: Router
+    private router: Router,
+    private message: NzMessageService
   ) {}
 
   public getJwtToken() {
@@ -18,8 +21,14 @@ export class JwtService {
   }
 
   public setJwtToken(token: string) {
-    localStorage.setItem(CommonConstants.TOKEN_KEY, token);
-    this.getDecodedAccessToken();
+    let decode = this.jwtHelper.decodeToken(token!);
+    if (decode.info.authorities[0].authority == ROLE.CUSTOMER) {
+      localStorage.setItem(CommonConstants.TOKEN_KEY, token);
+      this.getDecodedAccessToken();
+      this.router.navigate(['']);
+    } else {
+      this.message.error('Sai tài khoản hoặc mật khẩu');
+    }
   }
 
   public removeJwtToken(): void {
