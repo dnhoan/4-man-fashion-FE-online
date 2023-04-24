@@ -23,6 +23,7 @@ import { Page } from '../model/pageable.model';
 import { Router } from '@angular/router';
 
 export interface BestFavoriteProduct {
+  productId: number;
   quantity: number;
   name: string;
   image: string;

@@ -17,8 +17,8 @@ export class CustomerOnlineService {
   constructor(
     private requestService: RequestService,
     private message: NzMessageService,
-    private readonly jwtService: JwtService,  ) {}
-
+    private readonly jwtService: JwtService
+  ) {}
 
   getAllCustomer(search: SearchOption) {
     return this.requestService
@@ -72,13 +72,11 @@ export class CustomerOnlineService {
       )
       .pipe(
         map((res) => {
-          if ((res.code = '000')) {
-            this.message.success('Cập nhật thông tin khách hàng thành công');
+          if (res.code === '000') {
             this.jwtService.setJwtToken(res.data.token);
-            return true;
+            return res;
           } else {
-            this.message.error('Lỗi cập nhật thông tin khách hàng');
-            return false;
+            return res;
           }
         })
       );

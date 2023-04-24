@@ -26,6 +26,7 @@ export class ChangePasswordComponent implements OnInit {
   submit = false;
   customer!: CustomerDto;
   subCustomer!: Subscription;
+  email!: string;
 
   constructor(private fb: FormBuilder,
     private changepassService: ChangePassService,
@@ -50,8 +51,9 @@ export class ChangePasswordComponent implements OnInit {
       newPassword: value.newPassword,
       rePassword: value.rePassword,
     };
+    let phoneOrEmail : any =  localStorage.getItem('phoneOrEmail');
     if (this.formChangePassWord.value) {
-      this.changepassService.changePass(this.customer.email, data).subscribe(res => {
+      this.changepassService.changePass(phoneOrEmail , data).subscribe(res => {
         if (res.code === '000') {
           this.message.success(`${res.data}`);
           this.defaultValueForm();

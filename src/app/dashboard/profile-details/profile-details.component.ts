@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { CustomerDto } from 'src/app/model/CustomerDto.model';
 import { customerStore } from '../customer.repository';
 import { CustomerOnlineService } from './customer.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-profile-details',
@@ -19,7 +20,8 @@ export class ProfileDetailsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     readonly router: Router,
-    private customerService: CustomerOnlineService
+    private customerService: CustomerOnlineService,
+    private message: NzMessageService
   ) { }
   ngOnDestroy() {
     this.subCustomer.unsubscribe();
@@ -90,9 +92,13 @@ export class ProfileDetailsComponent implements OnInit {
     this.submit = true;
       this.addValueCustomer();
       this.customerService.updateCustomer(this.customer).subscribe((res) => {
-        if (res) {
+        if (res.code === '000') {
+          this.message.success('Cập nhật tài khoản thành công!');
           this.customer = customerStore.getValue().customer as CustomerDto;
+        } else {
+          this.message.error(`${res.desc}`);
         }
+        return;
       });
   }
 
