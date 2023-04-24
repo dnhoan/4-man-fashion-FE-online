@@ -88,14 +88,12 @@ export class ProfileDetailsComponent implements OnInit {
 
   update() {
     this.submit = true;
-    if (this.formProfile.valid) {
       this.addValueCustomer();
       this.customerService.updateCustomer(this.customer).subscribe((res) => {
         if (res) {
           this.customer = customerStore.getValue().customer as CustomerDto;
         }
       });
-    }
   }
 
   formatDate(date: Date) {
