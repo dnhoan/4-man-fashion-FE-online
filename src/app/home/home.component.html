@@ -212,90 +212,25 @@
         <div class="widget-featured-entries mt-5 mt-lg-0">
           <h4 class="mb-4 pb-3">Best selllers</h4>
 
-          <div class="media mb-3">
-            <a class="featured-entry-thumb" routerLink="/product-single">
-              <img
-                src="assets/images/p-1.jpg"
-                alt="Product thumb"
-                width="64"
-                class="img-fluid mr-3"
-              />
-            </a>
-            <div class="media-body">
-              <h6 class="featured-entry-title mb-0">
-                <a href="#">Keds - Kickstart Pom Pom</a>
-              </h6>
-              <p class="featured-entry-meta">$42.99</p>
+          <ng-container *ngFor="let fp of favoriteProducts">
+            <div class="media mb-3">
+              <a class="featured-entry-thumb" routerLink="/product-single">
+                <img
+                  class="img-fluid w-64 mb-3 img-first"
+                  [src]="fp.image"
+                  alt="product-img"
+                  style="width: 50px"
+                />
+              </a>
+              <div class="media-body ml-2">
+                <h6 class="featured-entry-title mb-0">
+                  <a>{{ fp.name }}</a><br>
+                  <a>Số lượt thích: {{ fp.quantity }}</a><br>
+                  Giá: {{ fp.minPrice }} - {{ fp.maxPrice }}
+                </h6>
+              </div>
             </div>
-          </div>
-
-          <div class="media mb-3">
-            <a class="featured-entry-thumb" href="#">
-              <img
-                src="assets/images/p-2.jpg"
-                alt="Product thumb"
-                width="64"
-                class="img-fluid mr-3"
-              />
-            </a>
-            <div class="media-body">
-              <h6 class="featured-entry-title mb-0">
-                <a href="#">Nike - Brasilia Medium Backpack</a>
-              </h6>
-              <p class="featured-entry-meta">$27.99</p>
-            </div>
-          </div>
-
-          <div class="media mb-3">
-            <a class="featured-entry-thumb" href="#">
-              <img
-                src="assets/images/p-3.jpg"
-                alt="Product thumb"
-                width="64"
-                class="img-fluid mr-3"
-              />
-            </a>
-            <div class="media-body">
-              <h6 class="featured-entry-title mb-0">
-                <a href="#">Guess - GU7295</a>
-              </h6>
-              <p>$38.00</p>
-            </div>
-          </div>
-
-          <div class="media mb-3">
-            <a class="featured-entry-thumb" href="#">
-              <img
-                src="assets/images/p-4.jpg"
-                alt="Product thumb"
-                width="64"
-                class="img-fluid mr-3"
-              />
-            </a>
-            <div class="media-body">
-              <h6 class="featured-entry-title mb-0">
-                <a href="#">Adidas Originals Cap</a>
-              </h6>
-              <p class="featured-entry-meta">$35.00</p>
-            </div>
-          </div>
-
-          <div class="media">
-            <a class="featured-entry-thumb" href="#">
-              <img
-                src="assets/images/p-5.jpg"
-                alt="Product thumb"
-                width="64"
-                class="img-fluid mr-3"
-              />
-            </a>
-            <div class="media-body">
-              <h6 class="featured-entry-title mb-0">
-                <a href="#">Big Star Flip Tops</a>
-              </h6>
-              <p class="featured-entry-meta">$10.60</p>
-            </div>
-          </div>
+          </ng-container>
         </div>
       </div>
 

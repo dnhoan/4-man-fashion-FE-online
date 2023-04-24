@@ -21,6 +21,14 @@ import { SearchProduct } from '../model/search-product.model';
 import { SORT_PRODUCT } from '../constants/constant.constant';
 import { Page } from '../model/pageable.model';
 import { Router } from '@angular/router';
+
+export interface BestFavoriteProduct {
+  quantity: number;
+  name: string;
+  image: string;
+  maxPrice: number;
+  minPrice:number;
+}
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -31,6 +39,7 @@ export class HomeComponent implements OnInit {
   subCustomer!: Subscription;
   currentProduct!: number;
   product!: ProductDTO;
+  favoriteProducts: BestFavoriteProduct[] = [];
   products: ProductDTO[] = [];
   searchProduct: SearchProduct = {
     status: CommonConstants.STATUS.ACTIVE,
@@ -59,6 +68,7 @@ export class HomeComponent implements OnInit {
   //Slider settings
   slideConfig = { slidesToShow: 1, slidesToScroll: 1 };
   ngOnInit(): void {
+    this.getBestfavoriteProduct();
     this.subSearchProduct = this.searchChange$
       .pipe(
         debounceTime(300),
@@ -119,5 +129,11 @@ export class HomeComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  getBestfavoriteProduct(){
+    this.favoriteProductsService.getBestFavoriteProduct().subscribe(res => {
+      this.favoriteProducts = res;
+    })
   }
 }

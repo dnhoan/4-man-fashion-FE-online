@@ -42,6 +42,29 @@ export class FavoriteProductService {
       );
   }
 
+  getBestFavoriteProduct() {
+    return this.requestService
+      .get(
+        `${this.apiFavoriteProduct}/favorite/statisticFavoriteProduct`,
+        'lấy danh sách sản phẩm yêu thích nhất'
+      )
+      .pipe(
+        map((res) => {
+          if (res.code == '000') {
+            return res.data;
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Lỗi lấy danh sách sản phẩm yêu thích nhất!',
+              icon: 'error',
+              confirmButtonText: 'Đóng',
+            });
+            return false;
+          }
+        })
+      );
+  }
+
   createFavoriteProduct(favoriteProduct: FavoriteProduct) {
     return this.requestService
       .post(
