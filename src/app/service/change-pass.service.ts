@@ -62,10 +62,10 @@ export class ChangePassService {
       );
   }
 
-  changePass(email: string, dataChange: DataChangePass) {
+  changePass(phoneOrEmail: string, dataChange: DataChangePass) {
     return this.requestService
       .get(
-        `${this.apiChangePass}/changepass?email=${email}&password=${dataChange.password}&newPassword=${dataChange.newPassword}&repassword=${dataChange.rePassword}`,
+        `${this.apiChangePass}/changepass?phoneOrEmail=${phoneOrEmail}&password=${dataChange.password}&newPassword=${dataChange.newPassword}&repassword=${dataChange.rePassword}`,
         'Thay đổi mật khẩu người dùng'
       )
       .pipe(

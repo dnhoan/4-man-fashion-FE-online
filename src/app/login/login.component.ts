@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
           password: this.loginForm.value.password,
         })
         .subscribe();
+        localStorage.setItem("phoneOrEmail", this.loginForm.value.phoneOrEmail)
     } else {
       Object.values(this.loginForm.controls).forEach((control) => {
         if (control.invalid) {
