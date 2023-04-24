@@ -15,6 +15,7 @@ import { ProductDetailService } from './product-detail.service';
 import { CartItemDto } from '../model/cartItemDto.model';
 import { FavoriteProduct } from '../model/favoriteProduct.model';
 import { FavoriteProductService } from '../service/favorite.service';
+import { BestFavoriteProduct } from '../home/home.component';
 
 @Component({
   selector: 'app-product-detail',
@@ -28,6 +29,7 @@ export class ProductDetailComponent implements OnInit {
   sizeSelected!: Size;
   colorSelected!: Color;
   productDetail!: ProductDetailDTO;
+  favoriteProducts: BestFavoriteProduct[] = [];
   currentCustomer!: CustomerDto | null;
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +41,7 @@ export class ProductDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.getBestfavoriteProduct();
     const product_id = this.route.snapshot.paramMap.get('id') as string;
     if (product_id) {
       this.productDetailService.getProductById(product_id).subscribe((res) => {
@@ -163,5 +166,12 @@ export class ProductDetailComponent implements OnInit {
 
   redirect404() {
     this.commonService.error('Lỗi lấy thông tin sản phẩm chi tiết');
+  }
+
+  getBestfavoriteProduct(){
+    this.favoriteProductsService.getBestFavoriteProduct().subscribe(res => {
+      this.favoriteProducts = res;
+
+    })
   }
 }

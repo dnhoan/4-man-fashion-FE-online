@@ -45,6 +45,7 @@ export class DashboardComponent implements OnInit {
   }
   logout() {
     this.jwtService.removeJwtToken();
+    localStorage.clear();
   }
   changeActive(item: any) {
     this.activeNav = item.routerLink;
