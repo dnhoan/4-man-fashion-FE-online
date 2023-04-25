@@ -47,12 +47,9 @@ export class ProductDetailComponent implements OnInit {
       this.productDetailService.getProductById(product_id).subscribe((res) => {
         if (res) {
           this.product = res;
-          console.log(this.product);
-
           if (this.product.productDetails.length == 1) {
             this.product.stock = this.product.productDetails[0].stock;
             this.product.productDetailSelected = this.product.productDetails[0];
-            console.log(this.product);
           } else {
             this.product.stock = this.product.productDetails.reduce(
               (a, b) => a + b.stock,
@@ -87,24 +84,33 @@ export class ProductDetailComponent implements OnInit {
       }
       let customer = customerStore.getValue().customer;
       if (customer) {
-        let cart: CartItemDto = {
-          id: 0,
-          amount: this.amount,
-          productDetailDTO: this.product
-            .productDetailSelected as ProductDetailDTO,
-        };
-        this.cartService.addToCart(customer.id, cart).subscribe((res) => {
-          cartItemsStore.update(
-            upsertEntitiesById(res.id, {
-              updater: { amount: res.amount },
-              creator: () => res,
-            })
-          );
-          this.commonService.success('Thêm vào giỏ hàng thành công');
-        });
+        if (
+          this.product.productDetailSelected &&
+          this.product.productDetailSelected.status == 0
+        ) {
+          this.commonService.info('Sản phẩm đã ngừng kinh doanh');
+        } else {
+          let cart: CartItemDto = {
+            id: 0,
+            amount: this.amount,
+            productDetailDTO: this.product
+              .productDetailSelected as ProductDetailDTO,
+          };
+          this.cartService.addToCart(customer.id, cart).subscribe((res) => {
+            cartItemsStore.update(
+              upsertEntitiesById(res.id, {
+                updater: { amount: res.amount },
+                creator: () => res,
+              })
+            );
+            this.commonService.success('Thêm vào giỏ hàng thành công');
+          });
+        }
       } else {
         this.router.navigate(['/login']);
       }
+    } else {
+      this.commonService.info('Vui lòng chọn phân loại sản phẩm');
     }
   }
   addFavoriteProduct() {
@@ -168,10 +174,9 @@ export class ProductDetailComponent implements OnInit {
     this.commonService.error('Lỗi lấy thông tin sản phẩm chi tiết');
   }
 
-  getBestfavoriteProduct(){
-    this.favoriteProductsService.getBestFavoriteProduct().subscribe(res => {
+  getBestfavoriteProduct() {
+    this.favoriteProductsService.getBestFavoriteProduct().subscribe((res) => {
       this.favoriteProducts = res;
-
-    })
+    });
   }
 }

@@ -172,7 +172,7 @@ export class CheckoutComponent implements OnInit {
     }
   }
   returnHome() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
   returnOrders() {
     this.router.navigate(['/dashboard/order']);
