@@ -170,11 +170,7 @@
               Đã nhận được hàng
             </button>
             <a
-              *ngIf="
-                order.orderStatus == ORDER_STATUS.PENDING ||
-                order.orderStatus == ORDER_STATUS.CONFIRMED ||
-                order.orderStatus == ORDER_STATUS.PACKAGING
-              "
+              *ngIf="order.orderStatus == ORDER_STATUS.PENDING"
               (click)="showConfirmCancelOrder(i_order)"
               class="btn btn-main btn-small"
             >
